@@ -3,78 +3,167 @@
 
   let containerEl;
   let canvas;
-  let animId;
   let width = 0;
-  let height = 160;
-
-  let mouseX = -1000;
-  let mouseY = -1000;
+  let height = 150;
 
   // Rich flower garden configuration
   const flowers = [];
   const backdropGrass = [];
 
   const flowerStyles = [
-    { type: 'rose', colors: ['#e11d48', '#ff2d55', '#ff4d6d'], petals: 8, radius: 10, center: '#ffd54f' },
-    { type: 'daisy', colors: ['#ffffff', '#fff0f3', '#ffe4e6'], petals: 8, radius: 8.5, center: '#fbc02d' },
-    { type: 'pinkBlossom', colors: ['#ff80ab', '#ff4081', '#f06292'], petals: 6, radius: 9, center: '#fff9c4' },
-    { type: 'sunflower', colors: ['#ffd54f', '#ffca28', '#ffb300'], petals: 9, radius: 8, center: '#5d4037' },
-    { type: 'lavender', colors: ['#ba68c8', '#ab47bc', '#ce93d8'], petals: 5, radius: 7.5, center: '#ffffff' },
-    { type: 'tulip', colors: ['#ff1744', '#f50057', '#ff5252'], petals: 4, radius: 9.5, center: '#ffd54f' }
+    { type: 'rose', colors: ['#e11d48', '#ff2d55', '#ff4d6d'], petals: 8, radius: 9, center: '#ffd54f' },
+    { type: 'daisy', colors: ['#ffffff', '#fff0f3', '#ffe4e6'], petals: 8, radius: 8, center: '#fbc02d' },
+    { type: 'pinkBlossom', colors: ['#ff80ab', '#ff4081', '#f06292'], petals: 6, radius: 8.5, center: '#fff9c4' },
+    { type: 'sunflower', colors: ['#ffd54f', '#ffca28', '#ffb300'], petals: 9, radius: 7.5, center: '#5d4037' },
+    { type: 'lavender', colors: ['#ba68c8', '#ab47bc', '#ce93d8'], petals: 5, radius: 7, center: '#ffffff' },
+    { type: 'tulip', colors: ['#ff1744', '#f50057', '#ff5252'], petals: 4, radius: 8.5, center: '#ffd54f' }
   ];
 
   function initGarden() {
     flowers.length = 0;
     backdropGrass.length = 0;
 
-    const w = width || window.innerWidth || 400;
+    const w = width || (typeof window !== 'undefined' ? window.innerWidth : 400) || 400;
 
-    // 1. Subtle soft background grass blades to support the flowers
-    const grassCount = Math.floor(w / 5);
+    // 1. Soft background grass blades
+    const grassCount = Math.min(32, Math.floor(w / 12));
     for (let i = 0; i < grassCount; i++) {
       backdropGrass.push({
-        x: (i / grassCount) * w + (Math.random() * 6 - 3),
+        x: (i / grassCount) * w + (Math.random() * 8 - 4),
         height: (height * 0.3) + Math.random() * (height * 0.35),
         width: 3.0 + Math.random() * 1.5,
-        color: ['#4caf50', '#66bb6a', '#388e3c', '#81c784'][Math.floor(Math.random() * 4)],
-        bendOffset: Math.random() * Math.PI * 2,
-        bendSpeed: 0.8 + Math.random() * 0.4,
-        maxBend: 10 + Math.random() * 12
+        color: ['#4caf50', '#66bb6a', '#388e3c', '#81c784'][i % 4],
+        bend: (Math.random() * 14 - 7)
       });
     }
 
-    // 2. Dense, multi-layered flowers (60+ flowers across the bottom)
-    const flowerCount = Math.max(35, Math.floor(w / 14));
+    // 2. Beautiful flowers (optimized count)
+    const flowerCount = Math.min(28, Math.max(16, Math.floor(w / 15)));
     for (let i = 0; i < flowerCount; i++) {
-      const style = flowerStyles[Math.floor(Math.random() * flowerStyles.length)];
-      const color = style.colors[Math.floor(Math.random() * style.colors.length)];
-      const layer = Math.random(); // 0 = back, 1 = front
+      const style = flowerStyles[i % flowerStyles.length];
+      const color = style.colors[i % style.colors.length];
+      const layer = Math.random();
 
       flowers.push({
-        x: (i / flowerCount) * w + (Math.random() * 16 - 8),
-        stemHeight: (height * 0.28) + layer * (height * 0.52) + (Math.random() * 16),
+        x: (i / flowerCount) * w + (Math.random() * 12 - 6),
+        stemHeight: (height * 0.28) + layer * (height * 0.5) + (Math.random() * 12),
         style: style,
         color: color,
         centerColor: style.center,
-        radius: style.radius * (0.8 + layer * 0.45),
+        radius: style.radius * (0.8 + layer * 0.35),
         petals: style.petals,
-        bendOffset: Math.random() * Math.PI * 2,
-        bendSpeed: 0.9 + Math.random() * 0.45,
-        maxBend: 12 + Math.random() * 10,
-        leafSide: Math.random() > 0.5 ? 1 : -1,
-        leafHeight: 0.35 + Math.random() * 0.35
+        bend: (Math.random() * 16 - 8),
+        leafSide: i % 2 === 0 ? 1 : -1,
+        leafHeight: 0.35 + Math.random() * 0.3
       });
     }
 
-    // Sort so back flowers render first and front flowers layer nicely
     flowers.sort((a, b) => a.stemHeight - b.stemHeight);
+  }
+
+  function drawGarden(touchX = -1000) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Soft green ground base
+    const groundGrad = ctx.createLinearGradient(0, height - 26, 0, height);
+    groundGrad.addColorStop(0, 'rgba(76, 175, 80, 0.5)');
+    groundGrad.addColorStop(0.5, '#4caf50');
+    groundGrad.addColorStop(1, '#2e7d32');
+
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+    ctx.lineTo(0, height - 18);
+    for (let x = 0; x <= width; x += 30) {
+      ctx.lineTo(x, height - 18 + Math.sin(x * 0.03) * 2.5);
+    }
+    ctx.lineTo(width, height);
+    ctx.closePath();
+    ctx.fillStyle = groundGrad;
+    ctx.fill();
+
+    // Grass
+    for (const blade of backdropGrass) {
+      let bend = blade.bend;
+      const tipX = blade.x + bend;
+      const tipY = height - blade.height;
+      const cpx = blade.x + bend * 0.4;
+      const cpy = height - blade.height * 0.55;
+
+      ctx.beginPath();
+      ctx.moveTo(blade.x - blade.width * 0.5, height - 8);
+      ctx.quadraticCurveTo(cpx, cpy, tipX, tipY);
+      ctx.quadraticCurveTo(cpx + 1, cpy, blade.x + blade.width * 0.5, height - 8);
+      ctx.fillStyle = blade.color;
+      ctx.fill();
+    }
+
+    // Flowers
+    for (const flower of flowers) {
+      let bend = flower.bend;
+      if (touchX > 0) {
+        const dist = Math.abs(flower.x - touchX);
+        if (dist < 90) {
+          const push = (1 - dist / 90) * 28;
+          bend += (flower.x > touchX ? 1 : -1) * push;
+        }
+      }
+
+      const headX = flower.x + bend;
+      const headY = height - flower.stemHeight;
+      const cpx = flower.x + bend * 0.45;
+      const cpy = height - flower.stemHeight * 0.5;
+
+      // Stem
+      ctx.beginPath();
+      ctx.moveTo(flower.x, height - 6);
+      ctx.quadraticCurveTo(cpx, cpy, headX, headY);
+      ctx.strokeStyle = '#388e3c';
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+
+      // Leaf
+      const leafY = height - flower.stemHeight * flower.leafHeight;
+      const leafX = flower.x + bend * flower.leafHeight;
+      ctx.beginPath();
+      ctx.ellipse(leafX + flower.leafSide * 7, leafY, 6.5, 3, flower.leafSide * 0.4, 0, Math.PI * 2);
+      ctx.fillStyle = '#4caf50';
+      ctx.fill();
+
+      // Flower Head
+      ctx.save();
+      ctx.translate(headX, headY);
+
+      // Petals
+      const petalAngleStep = (Math.PI * 2) / flower.petals;
+      for (let p = 0; p < flower.petals; p++) {
+        const angle = p * petalAngleStep;
+        const px = Math.cos(angle) * (flower.radius * 0.7);
+        const py = Math.sin(angle) * (flower.radius * 0.7);
+        ctx.beginPath();
+        ctx.arc(px, py, flower.radius * 0.55, 0, Math.PI * 2);
+        ctx.fillStyle = flower.color;
+        ctx.fill();
+      }
+
+      // Center
+      ctx.beginPath();
+      ctx.arc(0, 0, flower.radius * 0.42, 0, Math.PI * 2);
+      ctx.fillStyle = flower.centerColor;
+      ctx.fill();
+
+      ctx.restore();
+    }
   }
 
   function resize() {
     if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     width = window.innerWidth || document.documentElement.clientWidth || 400;
-    height = Math.round(containerEl?.clientHeight || 160);
+    height = Math.round(containerEl?.clientHeight || 150);
 
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
@@ -86,199 +175,69 @@
     ctx.scale(dpr, dpr);
 
     initGarden();
+    drawGarden();
   }
 
+  let touchTimeout;
   function handlePointer(e) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
-  }
+    const touchX = e.clientX - rect.left;
+    drawGarden(touchX);
 
-  function handlePointerLeave() {
-    mouseX = -1000;
-    mouseY = -1000;
+    clearTimeout(touchTimeout);
+    touchTimeout = setTimeout(() => {
+      drawGarden();
+    }, 280);
   }
 
   onMount(() => {
     resize();
-    window.addEventListener('resize', resize);
-    window.addEventListener('pointermove', handlePointer, { passive: true });
-    window.addEventListener('pointerdown', handlePointer, { passive: true });
-    window.addEventListener('pointerup', handlePointerLeave, { passive: true });
-    window.addEventListener('touchend', handlePointerLeave, { passive: true });
-
-    const ctx = canvas.getContext('2d');
-    let time = 0;
-
-    function render() {
-      time += 0.024;
-      ctx.clearRect(0, 0, width, height);
-
-      // Soft green ground base
-      const groundGrad = ctx.createLinearGradient(0, height - 30, 0, height);
-      groundGrad.addColorStop(0, 'rgba(76, 175, 80, 0.45)');
-      groundGrad.addColorStop(0.5, '#4caf50');
-      groundGrad.addColorStop(1, '#2e7d32');
-
-      ctx.beginPath();
-      ctx.moveTo(0, height);
-      ctx.lineTo(0, height - 20);
-      for (let x = 0; x <= width; x += 25) {
-        const wave = Math.sin(x * 0.02 + time * 0.5) * 3;
-        ctx.lineTo(x, height - 20 + wave);
-      }
-      ctx.lineTo(width, height);
-      ctx.closePath();
-      ctx.fillStyle = groundGrad;
-      ctx.fill();
-
-      // Soft background grass hints
-      for (const blade of backdropGrass) {
-        const wind = Math.sin(time * blade.bendSpeed + blade.bendOffset) * blade.maxBend;
-        const tipX = blade.x + wind;
-        const tipY = height - blade.height;
-        const cpx = blade.x + wind * 0.4;
-        const cpy = height - blade.height * 0.55;
-
-        ctx.beginPath();
-        ctx.moveTo(blade.x - blade.width * 0.5, height - 10);
-        ctx.quadraticCurveTo(cpx, cpy, tipX, tipY);
-        ctx.quadraticCurveTo(cpx + 1, cpy, blade.x + blade.width * 0.5, height - 10);
-        ctx.fillStyle = blade.color;
-        ctx.fill();
-      }
-
-      // Blooming Flowers Layer
-      for (const flower of flowers) {
-        let wind = Math.sin(time * flower.bendSpeed + flower.bendOffset) * flower.maxBend;
-
-        // Interactive touch response: flowers bend away from touch
-        const dist = Math.hypot(flower.x - mouseX, height - mouseY);
-        if (dist < 110) {
-          const push = (1 - dist / 110) * 38;
-          wind += (flower.x > mouseX ? 1 : -1) * push;
-        }
-
-        const headX = flower.x + wind;
-        const headY = height - flower.stemHeight;
-        const cpx = flower.x + wind * 0.45;
-        const cpy = height - flower.stemHeight * 0.5;
-
-        // Green Stem
-        ctx.beginPath();
-        ctx.moveTo(flower.x, height - 8);
-        ctx.quadraticCurveTo(cpx, cpy, headX, headY);
-        ctx.strokeStyle = '#388e3c';
-        ctx.lineWidth = 2.4;
-        ctx.stroke();
-
-        // Stem Leaf
-        const leafY = height - flower.stemHeight * flower.leafHeight;
-        const leafX = flower.x + wind * flower.leafHeight;
-        ctx.beginPath();
-        ctx.ellipse(
-          leafX + flower.leafSide * 9,
-          leafY,
-          8,
-          3.5,
-          flower.leafSide * 0.4,
-          0,
-          Math.PI * 2
-        );
-        ctx.fillStyle = '#4caf50';
-        ctx.fill();
-
-        // Flower Blossom Head
-        ctx.save();
-        ctx.translate(headX, headY);
-        ctx.rotate(wind * 0.04);
-
-        // Petals Layer
-        const petalAngleStep = (Math.PI * 2) / flower.petals;
-        for (let p = 0; p < flower.petals; p++) {
-          const angle = p * petalAngleStep;
-          const px = Math.cos(angle) * (flower.radius * 0.7);
-          const py = Math.sin(angle) * (flower.radius * 0.7);
-
-          ctx.beginPath();
-          ctx.ellipse(
-            px,
-            py,
-            flower.radius * 0.65,
-            flower.radius * 0.45,
-            angle,
-            0,
-            Math.PI * 2
-          );
-          ctx.fillStyle = flower.color;
-          ctx.fill();
-
-          // Petal edge highlight
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-
-        // Flower Center Core
-        ctx.beginPath();
-        ctx.arc(0, 0, flower.radius * 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = flower.centerColor;
-        ctx.fill();
-
-        // Flower Core Sparkle Dot
-        ctx.beginPath();
-        ctx.arc(-flower.radius * 0.1, -flower.radius * 0.1, flower.radius * 0.15, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-
-        ctx.restore();
-      }
-
-      animId = requestAnimationFrame(render);
-    }
-
-    animId = requestAnimationFrame(render);
-
+    window.addEventListener('resize', resize, { passive: true });
     return () => {
-      cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
-      window.removeEventListener('pointermove', handlePointer);
-      window.removeEventListener('pointerdown', handlePointer);
-      window.removeEventListener('pointerup', handlePointerLeave);
-      window.removeEventListener('touchend', handlePointerLeave);
+      clearTimeout(touchTimeout);
     };
   });
 </script>
 
-<div bind:this={containerEl} class="flower-garden-container" aria-hidden="true">
-  <canvas
-    bind:this={canvas}
-    onpointermove={handlePointer}
-    onpointerdown={handlePointer}
-    onpointerleave={handlePointerLeave}
-  ></canvas>
+<div 
+  bind:this={containerEl} 
+  class="grass-fixed-container" 
+  onpointerdown={handlePointer}
+  role="region"
+  aria-label="Flower Garden"
+>
+  <canvas bind:this={canvas} class="grass-canvas"></canvas>
 </div>
 
 <style>
-  /* Fixed Bottom Flower Garden across Page 1, Page 2, and Page 3 */
-  .flower-garden-container {
+  .grass-fixed-container {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: clamp(135px, 18vh, 185px);
-    z-index: 15;
+    width: 100%;
+    height: 125px;
+    z-index: 20;
+    pointer-events: auto;
     overflow: hidden;
-    pointer-events: none;
-    filter: drop-shadow(0 -4px 12px rgba(233, 30, 99, 0.18));
-    transform: translateZ(0);
+    contain: strict;
+    transform-origin: bottom center;
+    animation: gentleBreeze 6s ease-in-out infinite alternate;
   }
 
-  canvas {
+  @keyframes gentleBreeze {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-1.2px) rotate(0.35deg); }
+    100% { transform: translateY(0px) rotate(-0.25deg); }
+  }
+
+  .grass-canvas {
     display: block;
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    pointer-events: auto;
+    touch-action: pan-y;
   }
 </style>

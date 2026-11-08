@@ -1,7 +1,5 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import * as THREE from 'three';
-  import CLOUDS from 'vanta/dist/vanta.clouds.min.js';
   import confetti from 'canvas-confetti';
   import GrassCanvas from './GrassCanvas.svelte';
   import Butterflies3D from './Butterflies3D.svelte';
@@ -12,8 +10,6 @@
   import { preloadHeroSingleFlight } from './singleFlight.js';
   import { resolveGuestFromUrl } from './guestRegistry.js';
 
-  let vantaElement;
-  let vantaEffect;
   let videoEl = $state();
   let activeChurchPanel = $state(-1);
   let guestInfo = $state(resolveGuestFromUrl());
@@ -127,57 +123,28 @@
       if (videoEl) {
         videoEl.play().catch(() => {});
       }
-      if (vantaElement && !vantaEffect) {
-        try {
-          vantaEffect = CLOUDS({
-            el: vantaElement,
-            THREE: THREE,
-            mouseControls: false,
-            touchControls: false,
-            gyroControls: false,
-            minHeight: 130.0,
-            minWidth: 200.0,
-            skyColor: 0xfce4ec,
-            cloudColor: 0xffffff,
-            cloudShadowColor: 0xf48fb1,
-            sunColor: 0xffd54f,
-            sunGlareColor: 0xff80ab,
-            sunlightColor: 0xfff9c4,
-            speed: 1.0
-          });
-        } catch (_) {}
-      }
     }, 60);
   }
 
-  // Balloon colors matching her red princess dress and pink theme
-  const balloonColors = [
-    '#e11d48', // Ruby red
-    '#ff2d55', // Bright pink
-    '#ff6b8b', // Soft rose
-    '#ffd166', // Golden yellow
-    '#ba68c8', // Soft purple
-    '#ff4081'  // Hot pink
-  ];
-
-  // Pre-generate balloons for continuous gentle floating
-  const balloons = Array.from({ length: 12 }).map((_, i) => ({
+  // Lightweight ambient floating balloons (reduced count, zero paint overhead)
+  const balloonColors = ['#e11d48', '#ff2d55', '#ffd166', '#ff4081'];
+  const balloons = Array.from({ length: 4 }).map((_, i) => ({
     id: i,
-    left: 4 + (i * 8) + (Math.random() * 4 - 2),
-    duration: 9 + (i % 5) * 2 + Math.random() * 2,
-    delay: (i * 0.9) % 7,
-    scale: 0.75 + (i % 4) * 0.12,
+    left: 12 + (i * 24),
+    duration: 14 + (i % 3) * 3,
+    delay: i * 2.2,
+    scale: 0.7 + (i % 2) * 0.12,
     color: balloonColors[i % balloonColors.length]
   }));
 
-  // Pre-generate gentle floating hearts
-  const heartColors = ['#ff2d55', '#ff4d6d', '#ff758f', '#ffb3c1'];
-  const hearts = Array.from({ length: 8 }).map((_, i) => ({
+  // Lightweight ambient floating hearts
+  const heartColors = ['#ff2d55', '#ff4d6d', '#ff758f'];
+  const hearts = Array.from({ length: 4 }).map((_, i) => ({
     id: i,
-    left: 8 + (i * 11) + (Math.random() * 5),
-    duration: 11 + (i % 4) * 2.5,
-    delay: (i * 1.3) % 9,
-    scale: 0.65 + (i % 3) * 0.25,
+    left: 16 + (i * 22),
+    duration: 16 + (i % 3) * 3,
+    delay: 1 + i * 2.5,
+    scale: 0.65 + (i % 2) * 0.15,
     color: heartColors[i % heartColors.length]
   }));
 
@@ -187,44 +154,20 @@
     const y = e.clientY / window.innerHeight;
 
     confetti({
-      particleCount: 35,
-      spread: 60,
+      particleCount: 25,
+      spread: 55,
       origin: { x, y },
       colors: ['#ff2d55', '#ffd700', '#ff6b8b', '#ff4081', '#ffffff']
     });
   }
 
   onMount(() => {
-    // Initialize 3D Cloud strictly on top
-    if (vantaElement) {
-      vantaEffect = CLOUDS({
-        el: vantaElement,
-        THREE: THREE,
-        mouseControls: false,
-        touchControls: false,
-        gyroControls: false,
-        minHeight: 130.0,
-        minWidth: 200.0,
-        skyColor: 0xfce4ec,        // Dreamy pastel pink sky
-        cloudColor: 0xffffff,      // Soft white fluffy clouds
-        cloudShadowColor: 0xf48fb1, // Soft rosy cloud shadow
-        sunColor: 0xffd54f,        // Warm golden sunlight
-        sunGlareColor: 0xff80ab,   // Gentle pink glare
-        sunlightColor: 0xfff9c4,   // Warm ambient sunlight
-        speed: 1.0
-      });
-    }
-
     if (videoEl) {
       videoEl.play().catch(() => {});
     }
   });
 
-  onDestroy(() => {
-    if (vantaEffect) {
-      vantaEffect.destroy();
-    }
-  });
+  onDestroy(() => {});
 </script>
 
 <main class="app-container" class:intro-active={introStep !== 'home'} class:home-ready={introStep === 'home' && isHomeReady} onpointerdown={handleScreenTap} role="region" aria-label="Elizabeth Birthday App">
@@ -257,8 +200,11 @@
     <!-- Interactive Blooming Flower Garden at the bottom (fixed frame across all pages) -->
     <GrassCanvas />
 
-  <!-- Cloud on top (fixed frame) -->
-  <div bind:this={vantaElement} class="cloud-top" aria-hidden="true"></div>
+    <!-- Pure CSS Hardware-Accelerated Cloud Canopy -->
+    <div class="cloud-top" aria-hidden="true">
+      <div class="cloud-soft cloud-layer-1"></div>
+      <div class="cloud-soft cloud-layer-2"></div>
+    </div>
 
   <!-- Ambient Floating Balloons and Hearts (fixed across all pages) -->
   <div class="floating-elements" aria-hidden="true">
@@ -389,8 +335,7 @@
             muted
             playsinline
             webkit-playsinline
-            preload="auto"
-            onloadedmetadata={(e) => e.currentTarget.play().catch(() => {})}
+            preload="metadata"
             onended={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
             class="venue-video-media"
           ></video>
@@ -405,8 +350,7 @@
             muted
             playsinline
             webkit-playsinline
-            preload="auto"
-            onloadedmetadata={(e) => e.currentTarget.play().catch(() => {})}
+            preload="metadata"
             onended={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
             class="venue-video-media"
           ></video>
@@ -567,7 +511,7 @@
       </div>
 
       <p class="gifts-thank-you">
-        Thank you for your love and blessings! ✨
+        Thank you for your love and blessings!
       </p>
     </div>
   </section>
@@ -628,17 +572,47 @@
     box-sizing: border-box;
   }
 
-  /* Cloud strictly on top - clean, no borders or pods */
+  /* Pure Hardware-Accelerated Floating Cloud Canopy (0 Three.js, 0 CPU) */
   .cloud-top {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 130px;
-    z-index: 30;
+    height: 125px;
+    z-index: 10;
     pointer-events: none;
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 35%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 35%, transparent 100%);
+    overflow: hidden;
+    contain: strict;
+    background: linear-gradient(180deg, rgba(254, 226, 236, 0.92) 0%, rgba(254, 226, 236, 0.4) 65%, transparent 100%);
+  }
+
+  .cloud-soft {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .cloud-layer-1 {
+    background: radial-gradient(ellipse 160px 45px at 15% 25%, rgba(255, 255, 255, 0.85) 0%, transparent 70%),
+                radial-gradient(ellipse 220px 55px at 50% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 70%),
+                radial-gradient(ellipse 180px 48px at 85% 28%, rgba(255, 255, 255, 0.82) 0%, transparent 70%);
+    animation: driftCloud 32s linear infinite;
+  }
+
+  .cloud-layer-2 {
+    background: radial-gradient(ellipse 190px 45px at 30% 35%, rgba(255, 240, 245, 0.75) 0%, transparent 65%),
+                radial-gradient(ellipse 210px 50px at 70% 30%, rgba(255, 245, 248, 0.8) 0%, transparent 65%);
+    animation: driftCloud 46s linear infinite reverse;
+    opacity: 0.7;
+  }
+
+  @keyframes driftCloud {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
   }
 
   /* Stage with Elizabeth */
@@ -1497,7 +1471,7 @@
     z-index: 5;
   }
 
-  /* Balloons */
+  /* Lightweight Hardware-Accelerated Floating Balloons */
   .balloon {
     position: absolute;
     bottom: -140px;
@@ -1506,16 +1480,15 @@
     align-items: center;
     will-change: transform;
     animation: floatUp infinite linear;
-    transform: scale(var(--scale));
+    transform: translate3d(0, 0, 0) scale(var(--scale));
     opacity: 0.9;
   }
 
   .balloon-body {
-    width: 44px;
-    height: 54px;
-    background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--balloon-color) 45%, rgba(0,0,0,0.2) 100%);
+    width: 42px;
+    height: 52px;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--balloon-color) 45%, rgba(0,0,0,0.18) 100%);
     border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-    box-shadow: inset -2px -4px 8px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.12);
   }
 
   .balloon-knot {
@@ -1528,58 +1501,57 @@
 
   .balloon-string {
     width: 1px;
-    height: 48px;
-    background: rgba(120, 100, 110, 0.4);
+    height: 44px;
+    background: rgba(120, 100, 110, 0.35);
   }
 
   @keyframes floatUp {
     0% {
-      transform: translateY(0) scale(var(--scale)) rotate(-4deg);
+      transform: translate3d(0, 0, 0) scale(var(--scale)) rotate(-3deg);
       opacity: 0;
     }
     10% {
-      opacity: 0.92;
+      opacity: 0.9;
     }
     50% {
-      transform: translateY(-60vh) scale(var(--scale)) rotate(4deg);
+      transform: translate3d(0, -60vh, 0) scale(var(--scale)) rotate(3deg);
     }
     90% {
-      opacity: 0.92;
+      opacity: 0.9;
     }
     100% {
-      transform: translateY(-130vh) scale(var(--scale)) rotate(-3deg);
+      transform: translate3d(0, -130vh, 0) scale(var(--scale)) rotate(-3deg);
       opacity: 0;
     }
   }
 
-  /* Floating Hearts */
+  /* Lightweight Hardware-Accelerated Floating Hearts */
   .floating-heart {
     position: absolute;
     bottom: -40px;
     color: var(--heart-color);
     will-change: transform;
     animation: floatHeartUp infinite ease-in;
-    transform: scale(var(--scale));
+    transform: translate3d(0, 0, 0) scale(var(--scale));
     opacity: 0.85;
-    filter: drop-shadow(0 2px 6px rgba(255, 77, 109, 0.3));
   }
 
   @keyframes floatHeartUp {
     0% {
-      transform: translateY(0) scale(var(--scale)) rotate(0deg);
+      transform: translate3d(0, 0, 0) scale(var(--scale)) rotate(0deg);
       opacity: 0;
     }
     15% {
       opacity: 0.85;
     }
     50% {
-      transform: translateY(-55vh) scale(calc(var(--scale) * 1.1)) rotate(8deg);
+      transform: translate3d(0, -55vh, 0) scale(calc(var(--scale) * 1.08)) rotate(6deg);
     }
     85% {
       opacity: 0.85;
     }
     100% {
-      transform: translateY(-120vh) scale(var(--scale)) rotate(-8deg);
+      transform: translate3d(0, -120vh, 0) scale(var(--scale)) rotate(-6deg);
       opacity: 0;
     }
   }
