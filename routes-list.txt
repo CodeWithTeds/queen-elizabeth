@@ -1,0 +1,105 @@
+=======================================================
+   PRINCESS ELIZABETH • ROYAL INVITATION ROUTES LIST
+=======================================================
+
+--- NINONG (GODFATHERS) ---
+
+1. Andrew Brozo
+   Route: /andrew
+   Local Link: http://localhost:5173/andrew
+   Displays: "Ninong Andrew"
+
+2. Darille Pauitan
+   Route: /darille
+   Local Link: http://localhost:5173/darille
+   Displays: "Ninong Darille"
+
+3. Luis Tababa
+   Route: /luis
+   Local Link: http://localhost:5173/luis
+   Displays: "Ninong Luis"
+
+4. Kian Morenencia
+   Route: /kian
+   Local Link: http://localhost:5173/kian
+   Displays: "Ninong Kian"
+
+5. Zanjoe Manuel
+   Route: /zanjoe
+   Local Link: http://localhost:5173/zanjoe
+   Displays: "Ninong Zanjoe"
+
+6. Julius Togonon
+   Route: /julius
+   Local Link: http://localhost:5173/julius
+   Displays: "Ninong Julius"
+
+7. Joeschar Santos
+   Route: /joeschar
+   Local Link: http://localhost:5173/joeschar
+   Displays: "Ninong Joeschar"
+
+8. Ibarra Ordinaryo
+   Route: /ibarra
+   Local Link: http://localhost:5173/ibarra
+   Displays: "Ninong Ibarra"
+
+9. Johnpaul Cagalitan
+   Route: /johnpaul
+   Local Link: http://localhost:5173/johnpaul
+   Displays: "Ninong Johnpaul"
+
+10. Shertone
+    Route: /shertone
+    Local Link: http://localhost:5173/shertone
+    Displays: "Ninong Shertone"
+
+11. Tito Ariel
+    Route: /tito-ariel  (also works with: /ariel)
+    Local Link: http://localhost:5173/tito-ariel
+    Displays: "Ninong Tito Ariel"
+
+
+--- NINANG (GODMOTHERS) ---
+
+1. Sitti Alpad
+   Route: /sitti
+   Local Link: http://localhost:5173/sitti
+   Displays: "Ninang Sitti"
+
+2. Alyssa Maranan
+   Route: /alyssa
+   Local Link: http://localhost:5173/alyssa
+   Displays: "Ninang Alyssa"
+
+3. Nicole Olimba
+   Route: /nicole
+   Local Link: http://localhost:5173/nicole
+   Displays: "Ninang Nicole"
+
+4. Andjhelyka Nieto
+   Route: /andjhelyka
+   Local Link: http://localhost:5173/andjhelyka
+   Displays: "Ninang Andjhelyka"
+
+5. Analyn
+   Route: /analyn
+   Local Link: http://localhost:5173/analyn
+   Displays: "Ninang Analyn"
+
+6. Marie Charlotte Pangan
+   Route: /marie-charlotte  (also works with: /marie or /charlotte)
+   Local Link: http://localhost:5173/marie-charlotte
+   Displays: "Ninang Marie Charlotte"
+
+7. Maria Fe Ferarriz
+   Route: /maria-fe  (also works with: /maria or /mariafe)
+   Local Link: http://localhost:5173/maria-fe
+   Displays: "Ninang Maria Fe"
+
+
+=======================================================
+Note: Once you deploy to your live domain (e.g., https://elizabeth.com),
+simply replace "http://localhost:5173" with your live domain:
+e.g. https://your-domain.com/andrew
+=======================================================
