@@ -1,7 +1,10 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import * as THREE from 'three';
+  import CLOUDS from 'vanta/dist/vanta.clouds.min.js';
   import confetti from 'canvas-confetti';
   import GrassCanvas from './GrassCanvas.svelte';
+  import Butterflies3D from './Butterflies3D.svelte';
   import TopFlowerGarland from './TopFlowerGarland.svelte';
   import EnvelopeIntro from './EnvelopeIntro.svelte';
   import GrandDukeWelcome from './GrandDukeWelcome.svelte';
@@ -9,6 +12,8 @@
   import { preloadHeroSingleFlight } from './singleFlight.js';
   import { resolveGuestFromUrl } from './guestRegistry.js';
 
+  let vantaElement;
+  let vantaEffect;
   let videoEl = $state();
   let activeChurchPanel = $state(-1);
   let guestInfo = $state(resolveGuestFromUrl());
@@ -122,8 +127,59 @@
       if (videoEl) {
         videoEl.play().catch(() => {});
       }
+      if (vantaElement && !vantaEffect) {
+        try {
+          vantaEffect = CLOUDS({
+            el: vantaElement,
+            THREE: THREE,
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 130.0,
+            minWidth: 200.0,
+            skyColor: 0xfce4ec,
+            cloudColor: 0xffffff,
+            cloudShadowColor: 0xf48fb1,
+            sunColor: 0xffd54f,
+            sunGlareColor: 0xff80ab,
+            sunlightColor: 0xfff9c4,
+            speed: 1.0
+          });
+        } catch (_) {}
+      }
     }, 60);
   }
+
+  // Balloon colors matching her red princess dress and pink theme
+  const balloonColors = [
+    '#e11d48', // Ruby red
+    '#ff2d55', // Bright pink
+    '#ff6b8b', // Soft rose
+    '#ffd166', // Golden yellow
+    '#ba68c8', // Soft purple
+    '#ff4081'  // Hot pink
+  ];
+
+  // Pre-generate balloons for continuous gentle floating
+  const balloons = Array.from({ length: 12 }).map((_, i) => ({
+    id: i,
+    left: 4 + (i * 8) + (Math.random() * 4 - 2),
+    duration: 9 + (i % 5) * 2 + Math.random() * 2,
+    delay: (i * 0.9) % 7,
+    scale: 0.75 + (i % 4) * 0.12,
+    color: balloonColors[i % balloonColors.length]
+  }));
+
+  // Pre-generate gentle floating hearts
+  const heartColors = ['#ff2d55', '#ff4d6d', '#ff758f', '#ffb3c1'];
+  const hearts = Array.from({ length: 8 }).map((_, i) => ({
+    id: i,
+    left: 8 + (i * 11) + (Math.random() * 5),
+    duration: 11 + (i % 4) * 2.5,
+    delay: (i * 1.3) % 9,
+    scale: 0.65 + (i % 3) * 0.25,
+    color: heartColors[i % heartColors.length]
+  }));
 
   function handleScreenTap(e) {
     if (introStep !== 'home') return;
@@ -131,20 +187,44 @@
     const y = e.clientY / window.innerHeight;
 
     confetti({
-      particleCount: 20,
-      spread: 50,
+      particleCount: 35,
+      spread: 60,
       origin: { x, y },
       colors: ['#ff2d55', '#ffd700', '#ff6b8b', '#ff4081', '#ffffff']
     });
   }
 
   onMount(() => {
+    // Initialize 3D Cloud strictly on top
+    if (vantaElement) {
+      vantaEffect = CLOUDS({
+        el: vantaElement,
+        THREE: THREE,
+        mouseControls: false,
+        touchControls: false,
+        gyroControls: false,
+        minHeight: 130.0,
+        minWidth: 200.0,
+        skyColor: 0xfce4ec,        // Dreamy pastel pink sky
+        cloudColor: 0xffffff,      // Soft white fluffy clouds
+        cloudShadowColor: 0xf48fb1, // Soft rosy cloud shadow
+        sunColor: 0xffd54f,        // Warm golden sunlight
+        sunGlareColor: 0xff80ab,   // Gentle pink glare
+        sunlightColor: 0xfff9c4,   // Warm ambient sunlight
+        speed: 1.0
+      });
+    }
+
     if (videoEl) {
       videoEl.play().catch(() => {});
     }
   });
 
-  onDestroy(() => {});
+  onDestroy(() => {
+    if (vantaEffect) {
+      vantaEffect.destroy();
+    }
+  });
 </script>
 
 <main class="app-container" class:intro-active={introStep !== 'home'} class:home-ready={introStep === 'home' && isHomeReady} onpointerdown={handleScreenTap} role="region" aria-label="Elizabeth Birthday App">
@@ -156,304 +236,339 @@
         guestInfo.isNotFound = false;
       }}
     />
-  {:else if introStep === 'envelope'}
-    <!-- Step 1 ONLY: Interactive Envelope First Screen -->
-    <EnvelopeIntro onOpen={handleOpenEnvelope} />
-  {:else if introStep === 'grand-duke'}
-    <!-- Step 2 ONLY: The Grand Duke Welcomes Guests -->
+  {/if}
+
+  <!-- Intro Sequence (Steps 1 & 2 before Home Screen) -->
+  {#if introStep !== 'home'}
+    <!-- Step 2: The Grand Duke Welcomes Guests (Directly underneath the envelope) -->
     <GrandDukeWelcome onEnter={handleEnterHome} />
-  {:else if introStep === 'home'}
-    <!-- Step 3 ONLY: Home Screen Content (Zero wasted memory prior to entering) -->
-    <div class="home-screen-content">
-      <!-- 2D Flowers Garland on top (fixed frame) -->
-      <TopFlowerGarland />
 
-      <!-- Interactive Blooming Flower Garden at the bottom (fixed frame across all pages) -->
-      <GrassCanvas />
+    <!-- Step 1: Interactive Envelope First Screen (Sits directly on top at z-index: 9999) -->
+    {#if introStep === 'envelope'}
+      <EnvelopeIntro onOpen={handleOpenEnvelope} />
+    {/if}
+  {/if}
 
-      <!-- Pure CSS Hardware-Accelerated Cloud Canopy -->
-      <div class="cloud-top" aria-hidden="true">
-        <div class="cloud-soft cloud-layer-1"></div>
-        <div class="cloud-soft cloud-layer-2"></div>
+  <!-- Home Screen Content (Hidden while on intro screens) -->
+  <div class="home-screen-content" class:home-hidden={introStep !== 'home'}>
+    <!-- 2D Flowers Garland on top (fixed frame) -->
+    <TopFlowerGarland />
+
+    <!-- Interactive Blooming Flower Garden at the bottom (fixed frame across all pages) -->
+    <GrassCanvas />
+
+  <!-- Cloud on top (fixed frame) -->
+  <div bind:this={vantaElement} class="cloud-top" aria-hidden="true"></div>
+
+  <!-- Ambient Floating Balloons and Hearts (fixed across all pages) -->
+  <div class="floating-elements" aria-hidden="true">
+    {#each balloons as b (b.id)}
+      <div 
+        class="balloon" 
+        style="
+          left: {b.left}%; 
+          animation-duration: {b.duration}s; 
+          animation-delay: -{b.delay}s;
+          --balloon-color: {b.color};
+          --scale: {b.scale};
+        "
+      >
+        <div class="balloon-body"></div>
+        <div class="balloon-knot"></div>
+        <div class="balloon-string"></div>
+      </div>
+    {/each}
+
+    {#each hearts as h (h.id)}
+      <div 
+        class="floating-heart"
+        style="
+          left: {h.left}%;
+          animation-duration: {h.duration}s;
+          animation-delay: -{h.delay}s;
+          --scale: {h.scale};
+          --heart-color: {h.color};
+        "
+      >
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+    {/each}
+  </div>
+
+  <!-- PAGE 1: Main Screen with Elizabeth, 3D WebGL Butterflies, and Blooming Garden -->
+  <section class="page-snap-screen page-1">
+    <div class="stage">
+      <img 
+        src="/images/main-page.avif" 
+        alt="Elizabeth" 
+        class="center-image" 
+        draggable="false"
+        width="1858"
+        height="2844"
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+      />
+    </div>
+
+    <!-- 3D WebGL Butterflies Fluttering Around Flowers & Elizabeth -->
+    <Butterflies3D />
+  </section>
+
+  <!-- PAGE 2: Modern Church Showcase -->
+  <section class="page-snap-screen page-church">
+    <div class="church-mobile-layout">
+      <!-- Church Title & Historical Heritage Text -->
+      <header class="church-header-info">
+        <h3 class="church-time-title">10:00 AM to 11:00 AM</h3>
+        <h2 class="church-title">St. Raphael the Archangel Parish - Montalban</h2>
+        <p class="church-desc">
+          The seed of St. Raphael the Archangel Parish was a chapel built in Brgy. San Rafael, Rodriguez, Rizal, which was then part of the parish of Our Lady of the Most Holy Rosary.
+        </p>
+      </header>
+
+      <!-- Dynamic 3D Perspective Collage Stage (Referenced from uploaded mockup) -->
+      <div class="church-triptych-stage">
+        {#each churchPanels as panel, idx (panel.id)}
+          <div 
+            class="triptych-card triptych-card-{idx + 1}"
+            class:triptych-card-active={activeChurchPanel === idx}
+            onclick={() => activeChurchPanel = activeChurchPanel === idx ? -1 : idx}
+            role="button"
+            tabindex="0"
+            onkeydown={(e) => e.key === 'Enter' && (activeChurchPanel = activeChurchPanel === idx ? -1 : idx)}
+          >
+            {#if panel.type === 'video'}
+              <video
+                bind:this={videoEl}
+                src={panel.src}
+                autoplay
+                loop
+                muted
+                playsinline
+                webkit-playsinline
+                preload="auto"
+                class="triptych-media"
+              ></video>
+            {:else}
+              <img
+                src={panel.src}
+                alt={panel.title}
+                class="triptych-media"
+                draggable="false"
+              />
+            {/if}
+            <div class="triptych-label">
+              <span>{panel.title}</span>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 3: The Venue Videos (All displayed directly with infinite loop) -->
+  <section class="page-snap-screen page-venue">
+    <div class="venue-mobile-layout">
+      <!-- Venue Header Title & Location Info -->
+      <header class="venue-header-info">
+        <h2 class="venue-title">Venue</h2>
+        <p class="venue-location">Greenbreeze Phase 2 Montalban Rizal Swimming Pool</p>
+      </header>
+
+      <!-- All Venue Videos Displayed Directly -->
+      <div class="venue-videos-grid">
+        <div class="venue-video-card">
+          <video
+            src="/images/pool.mp4"
+            poster="/images/pool-thumb.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+            onloadedmetadata={(e) => e.currentTarget.play().catch(() => {})}
+            onended={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
+            class="venue-video-media"
+          ></video>
+        </div>
+
+        <div class="venue-video-card">
+          <video
+            src="/images/swimming.mp4"
+            poster="/images/swimming-thumb.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            webkit-playsinline
+            preload="auto"
+            onloadedmetadata={(e) => e.currentTarget.play().catch(() => {})}
+            onended={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
+            class="venue-video-media"
+          ></video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 4: Elizabeth 1-10 Months Collage (Exact reference: uploaded 6-box collage) -->
+  <!-- PAGE 4: Elizabeth 1-10 Months (All 10 Photos at Once - Borderless & Boxless) -->
+  <section class="page-snap-screen page-memories">
+    <div class="memories-mobile-layout">
+      <!-- Editorial Header -->
+      <header class="memories-header-info">
+        <span class="memories-script-title">The sweet</span>
+        <h2 class="memories-main-title">MEMORIES</h2>
+      </header>
+
+      <!-- All 10 Photos Displayed at Once: Pure Borderless & Boxless Mosaic -->
+      <div 
+        class="memories-mosaic-stage"
+        role="region"
+        aria-label="Elizabeth 1-10 Months Photo Showcase"
+      >
+        {#each elizabethMilestones as item, idx}
+          <button
+            type="button"
+            class="mosaic-item mosaic-item-{idx + 1}"
+            onclick={() => openLightbox(idx)}
+            aria-label="{item.label}"
+          >
+            <img
+              src={item.src}
+              alt={item.title}
+              class="mosaic-img"
+              loading="eager"
+            />
+            <span class="mosaic-badge">{item.month}</span>
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Fullscreen Interactive Lightbox Modal -->
+    {#if selectedLightboxIndex >= 0}
+      <div 
+        class="lightbox-backdrop"
+        onclick={closeLightbox}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Elizabeth Photo Viewer"
+        tabindex="-1"
+        onkeydown={(e) => {
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowRight') nextLightbox();
+          if (e.key === 'ArrowLeft') prevLightbox();
+        }}
+      >
+        <div class="lightbox-content" onclick={(e) => e.stopPropagation()} role="presentation">
+          <button type="button" class="lightbox-close-btn" onclick={closeLightbox} aria-label="Close">✕</button>
+          
+          <img 
+            src={elizabethMilestones[selectedLightboxIndex].src} 
+            alt={elizabethMilestones[selectedLightboxIndex].title}
+            class="lightbox-image"
+          />
+
+          <div class="lightbox-footer">
+            <button type="button" class="lightbox-nav-btn" onclick={prevLightbox} aria-label="Previous Month">❮</button>
+            <div class="lightbox-badge-info">
+              <span class="lightbox-month-label">{elizabethMilestones[selectedLightboxIndex].label}</span>
+              <span class="lightbox-title-text">{elizabethMilestones[selectedLightboxIndex].title}</span>
+            </div>
+            <button type="button" class="lightbox-nav-btn" onclick={nextLightbox} aria-label="Next Month">❯</button>
+          </div>
+        </div>
+      </div>
+    {/if}
+  </section>
+
+  <!-- PAGE 5: Royal Location Guide & Navigation Links (The Grand Duke - Freestanding, NO Box, NO Border) -->
+  <section class="page-snap-screen page-location">
+    <div class="location-mobile-layout">
+      <!-- Royal Header -->
+      <header class="location-header-info">
+        <h2 class="location-walt-title">Royal Directions</h2>
+        <p class="location-walt-sub">Your Guide to Elizabeth's Celebration</p>
+      </header>
+
+      <!-- The Grand Duke Messenger (Pure Freestanding Character Art, NO box) -->
+      <div class="grand-duke-stage">
+        <img 
+          src="/images/grand-duke-guide.png" 
+          alt="The Grand Duke" 
+          class="grand-duke-guide-img"
+          draggable="false"
+        />
+        <div class="grand-duke-speech">
+          <p class="royal-speech-text">
+            "Here is your location, {guestInfo.title ? guestInfo.title + ' ' + guestInfo.firstName : (guestInfo.firstName && guestInfo.firstName !== 'Special Guest' ? guestInfo.firstName : 'Ma’am & Sir')}! Have a safe and pleasant drive!"
+          </p>
+          <span class="royal-signoff">— The Grand Duke</span>
+        </div>
       </div>
 
-      <!-- PAGE 1: Main Screen with Elizabeth (Always ready) -->
-      <section class="page-snap-screen page-1">
-        <div class="stage">
-          <picture class="hero-picture">
-            <source srcset="/images/main-page.webp" type="image/webp">
-            <img 
-              src="/images/main-page.png" 
-              alt="Princess Elizabeth" 
-              class="center-image" 
-              draggable="false"
-              loading="eager"
-              fetchpriority="high"
-              decoding="sync"
-              onerror={(e) => {
-                if (!e.currentTarget.dataset.retried) {
-                  e.currentTarget.dataset.retried = '1';
-                  e.currentTarget.src = '/images/main.png';
-                }
-              }}
-            />
-          </picture>
-        </div>
-      </section>
-
-      <!-- PAGE 2: Modern Church Showcase -->
-      <section class="page-snap-screen page-church">
-        <div class="church-mobile-layout">
-          <!-- Church Title & Historical Heritage Text -->
-          <header class="church-header-info">
-            <h3 class="church-time-title">10:00 AM to 11:00 AM</h3>
-            <h2 class="church-title">St. Raphael the Archangel Parish - Montalban</h2>
-            <p class="church-desc">
-              The seed of St. Raphael the Archangel Parish was a chapel built in Brgy. San Rafael, Rodriguez, Rizal, which was then part of the parish of Our Lady of the Most Holy Rosary.
-            </p>
-          </header>
-
-          <!-- Dynamic 3D Perspective Collage Stage (Referenced from uploaded mockup) -->
-          <div class="church-triptych-stage">
-            {#each churchPanels as panel, idx (panel.id)}
-              <div 
-                class="triptych-card triptych-card-{idx + 1}"
-                class:triptych-card-active={activeChurchPanel === idx}
-                onclick={() => activeChurchPanel = activeChurchPanel === idx ? -1 : idx}
-                role="button"
-                tabindex="0"
-                onkeydown={(e) => e.key === 'Enter' && (activeChurchPanel = activeChurchPanel === idx ? -1 : idx)}
-              >
-                {#if panel.type === 'video'}
-                  <video
-                    bind:this={videoEl}
-                    src={panel.src}
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    webkit-playsinline
-                    preload="metadata"
-                    class="triptych-media"
-                  ></video>
-                {:else}
-                  <img
-                    src={panel.src}
-                    alt={panel.title}
-                    class="triptych-media"
-                    draggable="false"
-                  />
-                {/if}
-                <div class="triptych-label">
-                  <span>{panel.title}</span>
-                </div>
-              </div>
-            {/each}
+      <!-- Navigation Links (Sleek Borderless Direct Action Bars) -->
+      <div class="destinations-stack">
+        <!-- Destination 1: St. Raphael the Archangel Parish (Church) -->
+        <a 
+          href="https://www.google.com/maps/dir//St.+Raphael+the+Archangel+Parish,+P.+Rodriguez+St,+Rodriguez,+Rizal/@14.7508621,121.1605998,10804m/data=!3m1!1e3!4m8!4m7!1m0!1m5!1m1!1s0x3397bb4353f4d05d:0x5af5e36206dfb7ec!2m2!1d121.1586926!2d14.7326638?entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="destination-btn dest-btn-church"
+        >
+          <span class="dest-btn-icon">⛪</span>
+          <div class="dest-btn-info">
+            <span class="dest-btn-tag">Church Ceremony • 10:00 AM</span>
+            <span class="dest-btn-name">St. Raphael the Archangel Parish</span>
+            <span class="dest-btn-sub">P. Rodriguez St, Rodriguez, Rizal</span>
           </div>
-        </div>
-      </section>
+          <span class="dest-btn-arrow">➔</span>
+        </a>
 
-      <!-- PAGE 3: The Venue Videos (All displayed directly with infinite loop) -->
-      <section class="page-snap-screen page-venue">
-        <div class="venue-mobile-layout">
-          <!-- Venue Header Title & Location Info -->
-          <header class="venue-header-info">
-            <h2 class="venue-title">Venue</h2>
-            <p class="venue-location">Greenbreeze Phase 2 Montalban Rizal Swimming Pool</p>
-          </header>
-
-          <!-- All Venue Videos Displayed Directly -->
-          <div class="venue-videos-grid">
-            <div class="venue-video-card">
-              <video
-                src="/images/pool.mp4"
-                poster="/images/pool-thumb.jpg"
-                autoplay
-                loop
-                muted
-                playsinline
-                webkit-playsinline
-                preload="metadata"
-                onended={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
-                class="venue-video-media"
-              ></video>
-            </div>
-
-            <div class="venue-video-card">
-              <video
-                src="/images/swimming.mp4"
-                poster="/images/swimming-thumb.jpg"
-                autoplay
-                loop
-                muted
-                playsinline
-                webkit-playsinline
-                preload="metadata"
-                onended={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
-                class="venue-video-media"
-              ></video>
-            </div>
+        <!-- Destination 2: Green Breeze Phase 2 Clubhouse (Venue) -->
+        <a 
+          href="https://www.google.com/maps/dir//Green+Breeze+Phase+2+Clubhouse,+Q544%2BCC6,+Rodriguez,+1860+Rizal/@14.7569108,121.159573,4282m/data=!3m1!1e3!4m8!4m7!1m0!1m5!1m1!1s0x3397a4b17b88cc3d:0x7f16e02218403928!2m2!1d121.1560152!2d14.7560349?entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="destination-btn dest-btn-venue"
+        >
+          <span class="dest-btn-icon">🏰</span>
+          <div class="dest-btn-info">
+            <span class="dest-btn-tag">Reception & Pool Party</span>
+            <span class="dest-btn-name">Green Breeze Phase 2 Clubhouse</span>
+            <span class="dest-btn-sub">Rodriguez, 1860 Rizal</span>
           </div>
-        </div>
-      </section>
-
-      <!-- PAGE 4: Elizabeth 1-10 Months Collage (All 10 Photos at Once - Borderless & Boxless) -->
-      <section class="page-snap-screen page-memories">
-        <div class="memories-mobile-layout">
-          <!-- Editorial Header -->
-          <header class="memories-header-info">
-            <span class="memories-script-title">The sweet</span>
-            <h2 class="memories-main-title">MEMORIES</h2>
-          </header>
-
-          <!-- All 10 Photos Displayed at Once: Pure Borderless & Boxless Mosaic -->
-          <div 
-            class="memories-mosaic-stage"
-            role="region"
-            aria-label="Elizabeth 1-10 Months Photo Showcase"
-          >
-            {#each elizabethMilestones as item, idx}
-              <button
-                type="button"
-                class="mosaic-item mosaic-item-{idx + 1}"
-                onclick={() => openLightbox(idx)}
-                aria-label="{item.label}"
-              >
-                <img
-                  src={item.src}
-                  alt={item.title}
-                  class="mosaic-img"
-                  loading="lazy"
-                />
-                <span class="mosaic-badge">{item.month}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
-
-        <!-- Fullscreen Interactive Lightbox Modal -->
-        {#if selectedLightboxIndex >= 0}
-          <div 
-            class="lightbox-backdrop"
-            onclick={closeLightbox}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Elizabeth Photo Viewer"
-            tabindex="-1"
-            onkeydown={(e) => {
-              if (e.key === 'Escape') closeLightbox();
-              if (e.key === 'ArrowRight') nextLightbox();
-              if (e.key === 'ArrowLeft') prevLightbox();
-            }}
-          >
-            <div class="lightbox-content" onclick={(e) => e.stopPropagation()} role="presentation">
-              <button type="button" class="lightbox-close-btn" onclick={closeLightbox} aria-label="Close">✕</button>
-              
-              <img 
-                src={elizabethMilestones[selectedLightboxIndex].src} 
-                alt={elizabethMilestones[selectedLightboxIndex].title}
-                class="lightbox-image"
-              />
-
-              <div class="lightbox-footer">
-                <button type="button" class="lightbox-nav-btn" onclick={prevLightbox} aria-label="Previous Month">❮</button>
-                <div class="lightbox-badge-info">
-                  <span class="lightbox-month-label">{elizabethMilestones[selectedLightboxIndex].label}</span>
-                  <span class="lightbox-title-text">{elizabethMilestones[selectedLightboxIndex].title}</span>
-                </div>
-                <button type="button" class="lightbox-nav-btn" onclick={nextLightbox} aria-label="Next Month">❯</button>
-              </div>
-            </div>
-          </div>
-        {/if}
-      </section>
-
-      <!-- PAGE 5: Royal Location Guide & Navigation Links (The Grand Duke - Freestanding, NO Box, NO Border) -->
-      <section class="page-snap-screen page-location">
-        <div class="location-mobile-layout">
-          <!-- Royal Header -->
-          <header class="location-header-info">
-            <h2 class="location-walt-title">Royal Directions</h2>
-            <p class="location-walt-sub">Your Guide to Elizabeth's Celebration</p>
-          </header>
-
-          <!-- The Grand Duke Messenger (Pure Freestanding Character Art, NO box) -->
-          <div class="grand-duke-stage">
-            <img 
-              src="/images/grand-duke-guide.png" 
-              alt="The Grand Duke" 
-              class="grand-duke-guide-img"
-              draggable="false"
-            />
-            <div class="grand-duke-speech">
-              <p class="royal-speech-text">
-                "Here is your location, {guestInfo.title ? guestInfo.title + ' ' + guestInfo.firstName : (guestInfo.firstName && guestInfo.firstName !== 'Special Guest' ? guestInfo.firstName : 'Ma’am & Sir')}! Have a safe and pleasant drive!"
-              </p>
-              <span class="royal-signoff">— The Grand Duke</span>
-            </div>
-          </div>
-
-          <!-- Navigation Links (Sleek Borderless Direct Action Bars) -->
-          <div class="destinations-stack">
-            <!-- Destination 1: St. Raphael the Archangel Parish (Church) -->
-            <a 
-              href="https://www.google.com/maps/dir//St.+Raphael+the+Archangel+Parish,+P.+Rodriguez+St,+Rodriguez,+Rizal/@14.7508621,121.1605998,10804m/data=!3m1!1e3!4m8!4m7!1m0!1m5!1m1!1s0x3397bb4353f4d05d:0x5af5e36206dfb7ec!2m2!1d121.1586926!2d14.7326638?entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="destination-btn dest-btn-church"
-            >
-              <span class="dest-btn-icon">⛪</span>
-              <div class="dest-btn-info">
-                <span class="dest-btn-tag">Church Ceremony • 10:00 AM</span>
-                <span class="dest-btn-name">St. Raphael the Archangel Parish</span>
-                <span class="dest-btn-sub">P. Rodriguez St, Rodriguez, Rizal</span>
-              </div>
-              <span class="dest-btn-arrow">➔</span>
-            </a>
-
-            <!-- Destination 2: Green Breeze Phase 2 Clubhouse (Venue) -->
-            <a 
-              href="https://www.google.com/maps/dir//Green+Breeze+Phase+2+Clubhouse,+Q544%2BCC6,+Rodriguez,+1860+Rizal/@14.7569108,121.159573,4282m/data=!3m1!1e3!4m8!4m7!1m0!1m5!1m1!1s0x3397a4b17b88cc3d:0x7f16e02218403928!2m2!1d121.1560152!2d14.7560349?entry=ttu&g_ep=EgoyMDI2MTEwMy4wIKXMDSoASAFQAw%3D%3D"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="destination-btn dest-btn-venue"
-            >
-              <span class="dest-btn-icon">🏰</span>
-              <div class="dest-btn-info">
-                <span class="dest-btn-tag">Reception & Pool Party</span>
-                <span class="dest-btn-name">Green Breeze Phase 2 Clubhouse</span>
-                <span class="dest-btn-sub">Rodriguez, 1860 Rizal</span>
-              </div>
-              <span class="dest-btn-arrow">➔</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) -->
-      <section class="page-snap-screen page-gifts">
-        <div class="gifts-mobile-layout">
-          <span class="gifts-royal-tag">👑 A Gentle Note</span>
-          <h2 class="gifts-royal-title">Baby Essentials</h2>
-
-          <p class="gifts-solo-message">
-            “Your presence on our little Princess Elizabeth's special day is our greatest gift. Should you wish to bless her with a gift, essential baby items are warmly appreciated:”
-          </p>
-
-          <div class="essentials-grid">
-            <span class="essential-item">🍼 Milk</span>
-            <span class="essential-item">🧴 Baby Lotion</span>
-            <span class="essential-item">🫧 Body Wash</span>
-            <span class="essential-item">🧺 Laundry Detergent</span>
-          </div>
-
-          <p class="gifts-thank-you">
-            Thank you for your love and blessings! ✨
-          </p>
-        </div>
-      </section>
+          <span class="dest-btn-arrow">➔</span>
+        </a>
+      </div>
     </div>
-  {/if}
+  </section>
+
+  <!-- PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) -->
+  <section class="page-snap-screen page-gifts">
+    <div class="gifts-mobile-layout">
+      <div class="gifts-content-wrap">
+        <p class="gifts-solo-message">
+          “Your presence is our greatest gift! However, should you wish to bless our little princess, baby essentials are warmly appreciated:”
+        </p>
+        <div class="gifts-essentials-list">
+          <span class="essential-item">🍼 Baby Milk</span>
+          <span class="dot-sep">•</span>
+          <span class="essential-item">🌸 Baby Lotion</span>
+          <span class="dot-sep">•</span>
+          <span class="essential-item">🛁 Body Wash</span>
+          <span class="dot-sep">•</span>
+          <span class="essential-item">🫧 Laundry Detergent</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
 </main>
 
 <style>
@@ -510,47 +625,17 @@
     box-sizing: border-box;
   }
 
-  /* Pure Hardware-Accelerated Floating Cloud Canopy (0 Three.js, 0 CPU) */
+  /* Cloud strictly on top - clean, no borders or pods */
   .cloud-top {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 125px;
-    z-index: 10;
+    height: 130px;
+    z-index: 30;
     pointer-events: none;
-    overflow: hidden;
-    contain: strict;
-    background: linear-gradient(180deg, rgba(254, 226, 236, 0.92) 0%, rgba(254, 226, 236, 0.4) 65%, transparent 100%);
-  }
-
-  .cloud-soft {
-    position: absolute;
-    width: 200%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    will-change: transform;
-  }
-
-  .cloud-layer-1 {
-    background: radial-gradient(ellipse 160px 45px at 15% 25%, rgba(255, 255, 255, 0.85) 0%, transparent 70%),
-                radial-gradient(ellipse 220px 55px at 50% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 70%),
-                radial-gradient(ellipse 180px 48px at 85% 28%, rgba(255, 255, 255, 0.82) 0%, transparent 70%);
-    animation: driftCloud 32s linear infinite;
-  }
-
-  .cloud-layer-2 {
-    background: radial-gradient(ellipse 190px 45px at 30% 35%, rgba(255, 240, 245, 0.75) 0%, transparent 65%),
-                radial-gradient(ellipse 210px 50px at 70% 30%, rgba(255, 245, 248, 0.8) 0%, transparent 65%);
-    animation: driftCloud 46s linear infinite reverse;
-    opacity: 0.7;
-  }
-
-  @keyframes driftCloud {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 35%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 35%, transparent 100%);
   }
 
   /* Stage with Elizabeth */
@@ -563,10 +648,6 @@
     position: relative;
     z-index: 10;
     pointer-events: auto;
-  }
-
-  .hero-picture {
-    display: contents;
   }
 
   .center-image {
@@ -1318,14 +1399,12 @@
   /* PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) */
   .gifts-mobile-layout {
     width: 100%;
-    max-width: min(90vw, 400px);
+    max-width: min(90vw, 440px);
     height: 100%;
     max-height: calc(100dvh - 140px);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
     position: relative;
     z-index: 25;
     pointer-events: auto;
@@ -1335,28 +1414,20 @@
     margin: 0 auto;
   }
 
-  .gifts-royal-tag {
-    font-family: 'Cinzel', serif;
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #9d174d;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
-  }
-
-  .gifts-royal-title {
-    font-family: 'Waltograph', 'Cinzel Decorative', cursive, sans-serif;
-    font-size: clamp(1.8rem, 5.5vw, 2.3rem);
-    color: #831843;
-    margin: 0;
-    line-height: 1.1;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9), 0 2px 10px rgba(225, 29, 72, 0.15);
+  .gifts-content-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 320px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
   }
 
   .gifts-solo-message {
     font-family: 'Playfair Display', Didot, 'Bodoni MT', Georgia, serif;
-    font-size: clamp(0.85rem, 2.6vw, 0.96rem);
+    font-size: clamp(0.85rem, 2.6vw, 0.98rem);
     font-weight: 600;
     font-style: italic;
     line-height: 1.55;
@@ -1364,43 +1435,134 @@
     color: #2e101a;
     text-shadow: 0 1px 3px rgba(255, 255, 255, 0.95);
     margin: 0;
-    max-width: 310px;
+    max-width: 300px;
     border: none;
     background: transparent;
     box-shadow: none;
   }
 
-  .essentials-grid {
+  .gifts-essentials-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
-    gap: 8px 14px;
+    justify-content: center;
+    gap: 6px 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(0.76rem, 2.3vw, 0.86rem);
+    font-weight: 600;
+    color: #831843;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
     max-width: 290px;
-    margin: 4px 0 2px 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
   }
 
   .essential-item {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(0.82rem, 2.5vw, 0.92rem);
-    font-weight: 600;
-    color: #4a1525;
-    background: transparent;
-    border: none;
-    box-shadow: none;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
   }
 
-  .gifts-thank-you {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: clamp(0.8rem, 2.4vw, 0.88rem);
-    font-weight: 600;
-    color: #9f1239;
-    margin: 2px 0 0 0;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+  .dot-sep {
+    color: #e11d48;
+    opacity: 0.55;
+    font-size: 0.75rem;
+  }
+
+  /* Floating Ambient Elements */
+  .floating-elements {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Balloons */
+  .balloon {
+    position: absolute;
+    bottom: -140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    will-change: transform;
+    animation: floatUp infinite linear;
+    transform: scale(var(--scale));
+    opacity: 0.9;
+  }
+
+  .balloon-body {
+    width: 44px;
+    height: 54px;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--balloon-color) 45%, rgba(0,0,0,0.2) 100%);
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    box-shadow: inset -2px -4px 8px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .balloon-knot {
+    width: 6px;
+    height: 5px;
+    background: var(--balloon-color);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    margin-top: -1px;
+  }
+
+  .balloon-string {
+    width: 1px;
+    height: 48px;
+    background: rgba(120, 100, 110, 0.4);
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) scale(var(--scale)) rotate(-4deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.92;
+    }
+    50% {
+      transform: translateY(-60vh) scale(var(--scale)) rotate(4deg);
+    }
+    90% {
+      opacity: 0.92;
+    }
+    100% {
+      transform: translateY(-130vh) scale(var(--scale)) rotate(-3deg);
+      opacity: 0;
+    }
+  }
+
+  /* Floating Hearts */
+  .floating-heart {
+    position: absolute;
+    bottom: -40px;
+    color: var(--heart-color);
+    will-change: transform;
+    animation: floatHeartUp infinite ease-in;
+    transform: scale(var(--scale));
+    opacity: 0.85;
+    filter: drop-shadow(0 2px 6px rgba(255, 77, 109, 0.3));
+  }
+
+  @keyframes floatHeartUp {
+    0% {
+      transform: translateY(0) scale(var(--scale)) rotate(0deg);
+      opacity: 0;
+    }
+    15% {
+      opacity: 0.85;
+    }
+    50% {
+      transform: translateY(-55vh) scale(calc(var(--scale) * 1.1)) rotate(8deg);
+    }
+    85% {
+      opacity: 0.85;
+    }
+    100% {
+      transform: translateY(-120vh) scale(var(--scale)) rotate(-8deg);
+      opacity: 0;
+    }
   }
 </style>

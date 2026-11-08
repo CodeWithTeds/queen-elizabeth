@@ -1,31 +1,62 @@
 <script>
+  // Top Floral Garden Canopy powered by @iconify/svelte & fluent-emoji package
   import Icon from '@iconify/svelte';
   import './flowerIcons.js';
+
+  // Drifting floral petals and sparkles floating down from the canopy
+  const fallingFlora = [
+    { x: 10, duration: 6.8, delay: 0.2, swayX: 35, rotEnd: 360, icon: 'fluent-emoji:cherry-blossom', size: 18 },
+    { x: 24, duration: 8.5, delay: 2.4, swayX: -38, rotEnd: 420, icon: 'fluent-emoji:sparkles', size: 16 },
+    { x: 38, duration: 7.2, delay: 4.1, swayX: 42, rotEnd: 320, icon: 'fluent-emoji:leaf-fluttering-in-wind', size: 20 },
+    { x: 52, duration: 9.1, delay: 1.1, swayX: -35, rotEnd: 480, icon: 'fluent-emoji:blossom', size: 18 },
+    { x: 68, duration: 7.6, delay: 3.5, swayX: 36, rotEnd: 340, icon: 'fluent-emoji:cherry-blossom', size: 17 },
+    { x: 82, duration: 8.8, delay: 5.3, swayX: -40, rotEnd: 440, icon: 'fluent-emoji:sparkles', size: 16 },
+    { x: 92, duration: 7.9, delay: 2.8, swayX: 32, rotEnd: 380, icon: 'fluent-emoji:leaf-fluttering-in-wind', size: 19 },
+    { x: 60, duration: 8.2, delay: 6.2, swayX: -34, rotEnd: 410, icon: 'fluent-emoji:cherry-blossom', size: 17 }
+  ];
 
   // Garland flower canopy items positioned across the top arch
   const canopyFlowers = [
     // Left cluster
-    { id: 'f-left-1', icon: 'fluent-emoji:rose', sizeMultiplier: 1.05, left: 4, top: -2 },
-    { id: 'f-left-herb', icon: 'fluent-emoji:herb', sizeMultiplier: 0.88, left: 12, top: 0 },
-    { id: 'f-left-2', icon: 'fluent-emoji:cherry-blossom', sizeMultiplier: 0.95, left: 21, top: 6 },
-    { id: 'f-left-3', icon: 'fluent-emoji:blossom', sizeMultiplier: 0.9, left: 31, top: 12 },
-    { id: 'f-left-4', icon: 'fluent-emoji:tulip', sizeMultiplier: 0.95, left: 40, top: 18 },
+    { id: 'f-left-1', icon: 'fluent-emoji:rose', sizeMultiplier: 1.05, left: 4, top: -2, anim: 'bloomBobA', delay: 0 },
+    { id: 'f-left-herb', icon: 'fluent-emoji:herb', sizeMultiplier: 0.88, left: 12, top: 0, anim: 'leafRustleA', delay: 0.3 },
+    { id: 'f-left-2', icon: 'fluent-emoji:cherry-blossom', sizeMultiplier: 0.95, left: 21, top: 6, anim: 'bloomBobB', delay: 0.5 },
+    { id: 'f-left-3', icon: 'fluent-emoji:blossom', sizeMultiplier: 0.9, left: 31, top: 12, anim: 'bloomBobA', delay: 0.8 },
+    { id: 'f-left-4', icon: 'fluent-emoji:tulip', sizeMultiplier: 0.95, left: 40, top: 18, anim: 'bloomBobB', delay: 0.2 },
 
     // Center cluster (Crowning Arch)
-    { id: 'f-center-rose', icon: 'fluent-emoji:rose', sizeMultiplier: 1.25, left: 50, top: 20, isCenter: true },
-    { id: 'f-center-sparkle', icon: 'fluent-emoji:sparkles', sizeMultiplier: 0.65, left: 50, top: -2 },
+    { id: 'f-center-rose', icon: 'fluent-emoji:rose', sizeMultiplier: 1.25, left: 50, top: 20, anim: 'bloomCenter', delay: 0, isCenter: true },
+    { id: 'f-center-sparkle', icon: 'fluent-emoji:sparkles', sizeMultiplier: 0.65, left: 50, top: -2, anim: 'sparkleShimmer', delay: 0.2 },
 
     // Right cluster
-    { id: 'f-right-4', icon: 'fluent-emoji:hibiscus', sizeMultiplier: 0.95, left: 60, top: 18 },
-    { id: 'f-right-3', icon: 'fluent-emoji:blossom', sizeMultiplier: 0.9, left: 69, top: 12 },
-    { id: 'f-right-2', icon: 'fluent-emoji:cherry-blossom', sizeMultiplier: 0.95, left: 79, top: 6 },
-    { id: 'f-right-herb', icon: 'fluent-emoji:herb', sizeMultiplier: 0.88, left: 88, top: 0 },
-    { id: 'f-right-1', icon: 'fluent-emoji:rose', sizeMultiplier: 1.05, left: 96, top: -2 }
+    { id: 'f-right-4', icon: 'fluent-emoji:hibiscus', sizeMultiplier: 0.95, left: 60, top: 18, anim: 'bloomBobA', delay: 0.3 },
+    { id: 'f-right-3', icon: 'fluent-emoji:blossom', sizeMultiplier: 0.9, left: 69, top: 12, anim: 'bloomBobB', delay: 0.7 },
+    { id: 'f-right-2', icon: 'fluent-emoji:cherry-blossom', sizeMultiplier: 0.95, left: 79, top: 6, anim: 'bloomBobA', delay: 0.4 },
+    { id: 'f-right-herb', icon: 'fluent-emoji:herb', sizeMultiplier: 0.88, left: 88, top: 0, anim: 'leafRustleB', delay: 0.2 },
+    { id: 'f-right-1', icon: 'fluent-emoji:rose', sizeMultiplier: 1.05, left: 96, top: -2, anim: 'bloomBobB', delay: 0.6 }
   ];
 </script>
 
 <div class="top-garland-root" aria-hidden="true">
-  <!-- Swaying Botanical Garland Canopy Frame -->
+  <!-- 1. Soft Drifting Petal & Sparkle Shower (Falling gently from top canopy) -->
+  <div class="petal-shower">
+    {#each fallingFlora as f}
+      <div 
+        class="falling-item" 
+        style="
+          left: {f.x}%; 
+          animation-duration: {f.duration}s; 
+          animation-delay: -{f.delay}s; 
+          --sway-x: {f.swayX}px;
+          --rot-end: {f.rotEnd}deg;
+        "
+      >
+        <Icon icon={f.icon} width={f.size} height={f.size} />
+      </div>
+    {/each}
+  </div>
+
+  <!-- 2. Swaying Botanical Garland Canopy Frame -->
   <div class="garland-sway-bar">
     <!-- Arching Vine Canopy Layer Behind Flowers -->
     <svg viewBox="0 0 1200 135" preserveAspectRatio="none" class="vine-backdrop-svg">

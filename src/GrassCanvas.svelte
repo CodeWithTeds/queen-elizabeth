@@ -1,233 +1,284 @@
-<!-- Lush Fairytale SVG Flower Garden at the Bottom -->
-<div class="grass-fixed-container" aria-hidden="true">
-  <svg 
-    viewBox="0 0 1200 135" 
-    preserveAspectRatio="none" 
-    class="garden-svg"
-  >
-    <defs>
-      <linearGradient id="ground-grad" x1="0" y1="0" x2="0" y2="100%">
-        <stop offset="0%" stop-color="#4caf50" stop-opacity="0.75" />
-        <stop offset="50%" stop-color="#388e3c" stop-opacity="0.95" />
-        <stop offset="100%" stop-color="#2e7d32" stop-opacity="1" />
-      </linearGradient>
-    </defs>
+<script>
+  import { onMount } from 'svelte';
 
-    <!-- Lush Grass Mound Base -->
-    <path 
-      d="M0,135 L0,90 Q150,75 300,85 T600,80 T900,85 T1200,82 L1200,135 Z" 
-      fill="url(#ground-grad)" 
-    />
+  let containerEl;
+  let canvas;
+  let animId;
+  let width = 0;
+  let height = 160;
 
-    <!-- Grass Blades Layer -->
-    <path d="M20,105 Q30,65 42,48 Q35,70 30,105 Z" fill="#66bb6a" />
-    <path d="M70,110 Q85,68 100,52 Q90,75 80,110 Z" fill="#4caf50" />
-    <path d="M140,108 Q152,62 165,46 Q155,70 148,108 Z" fill="#81c784" />
-    <path d="M210,110 Q200,66 188,50 Q202,72 218,110 Z" fill="#66bb6a" />
-    <path d="M280,106 Q295,60 312,44 Q300,70 290,106 Z" fill="#4caf50" />
-    <path d="M350,112 Q362,68 378,52 Q365,74 358,112 Z" fill="#81c784" />
-    <path d="M420,108 Q410,64 395,48 Q412,70 428,108 Z" fill="#66bb6a" />
-    <path d="M490,110 Q505,62 522,45 Q510,72 500,110 Z" fill="#4caf50" />
-    <path d="M560,106 Q572,66 588,50 Q575,74 568,106 Z" fill="#81c784" />
-    <path d="M630,112 Q620,68 605,52 Q622,72 638,112 Z" fill="#66bb6a" />
-    <path d="M700,108 Q715,60 732,44 Q720,70 710,108 Z" fill="#4caf50" />
-    <path d="M770,110 Q782,65 798,48 Q785,72 778,110 Z" fill="#81c784" />
-    <path d="M840,106 Q830,66 815,50 Q832,72 848,106 Z" fill="#66bb6a" />
-    <path d="M910,112 Q925,62 942,45 Q930,72 920,112 Z" fill="#4caf50" />
-    <path d="M980,108 Q992,66 1008,50 Q995,74 988,108 Z" fill="#81c784" />
-    <path d="M1050,110 Q1040,68 1025,52 Q1042,72 1058,110 Z" fill="#66bb6a" />
-    <path d="M1120,108 Q1135,62 1152,46 Q1140,70 1130,108 Z" fill="#4caf50" />
-    <path d="M1180,106 Q1170,66 1158,50 Q1172,72 1188,106 Z" fill="#81c784" />
+  let mouseX = -1000;
+  let mouseY = -1000;
 
-    <!-- DENSE FLOWER CANOPY (20+ Blooming Fairytale Flowers) -->
-    <!-- Flower 1: Ruby Rose -->
-    <g transform="translate(45, 78)">
-      <path d="M0,38 Q-4,18 0,0" stroke="#2e7d32" stroke-width="2.8" fill="none" />
-      <circle cx="-6" cy="-4" r="7.5" fill="#e11d48" />
-      <circle cx="6" cy="-4" r="7.5" fill="#e11d48" />
-      <circle cx="0" cy="5" r="7.5" fill="#ff2d55" />
-      <circle cx="0" cy="0" r="5" fill="#ffd54f" />
-    </g>
+  // Rich flower garden configuration
+  const flowers = [];
+  const backdropGrass = [];
 
-    <!-- Flower 2: Bright Daisy -->
-    <g transform="translate(105, 82)">
-      <path d="M0,34 Q5,16 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="5" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="0" r="4.5" fill="#fbc02d" />
-    </g>
+  const flowerStyles = [
+    { type: 'rose', colors: ['#e11d48', '#ff2d55', '#ff4d6d'], petals: 8, radius: 10, center: '#ffd54f' },
+    { type: 'daisy', colors: ['#ffffff', '#fff0f3', '#ffe4e6'], petals: 8, radius: 8.5, center: '#fbc02d' },
+    { type: 'pinkBlossom', colors: ['#ff80ab', '#ff4081', '#f06292'], petals: 6, radius: 9, center: '#fff9c4' },
+    { type: 'sunflower', colors: ['#ffd54f', '#ffca28', '#ffb300'], petals: 9, radius: 8, center: '#5d4037' },
+    { type: 'lavender', colors: ['#ba68c8', '#ab47bc', '#ce93d8'], petals: 5, radius: 7.5, center: '#ffffff' },
+    { type: 'tulip', colors: ['#ff1744', '#f50057', '#ff5252'], petals: 4, radius: 9.5, center: '#ffd54f' }
+  ];
 
-    <!-- Flower 3: Sunflower -->
-    <g transform="translate(170, 72)">
-      <path d="M0,44 Q-6,20 0,0" stroke="#2e7d32" stroke-width="2.8" fill="none" />
-      <circle cx="-7" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="7" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="-7" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="7" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="0" r="4.8" fill="#5d4037" />
-    </g>
+  function initGarden() {
+    flowers.length = 0;
+    backdropGrass.length = 0;
 
-    <!-- Flower 4: Pink Blossom -->
-    <g transform="translate(235, 80)">
-      <path d="M0,36 Q4,18 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-6" cy="-4" r="7" fill="#ff758f" />
-      <circle cx="6" cy="-4" r="7" fill="#ff758f" />
-      <circle cx="0" cy="5" r="7" fill="#ff4d6d" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
+    const w = width || window.innerWidth || 400;
 
-    <!-- Flower 5: Lavender -->
-    <g transform="translate(300, 74)">
-      <path d="M0,42 Q-5,20 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-5" cy="0" r="6" fill="#ba68c8" />
-      <circle cx="5" cy="0" r="6" fill="#ba68c8" />
-      <circle cx="0" cy="-5" r="6" fill="#ce93d8" />
-      <circle cx="0" cy="5" r="6.5" fill="#ab47bc" />
-      <circle cx="0" cy="0" r="3.5" fill="#ffffff" />
-    </g>
+    // 1. Subtle soft background grass blades to support the flowers
+    const grassCount = Math.floor(w / 5);
+    for (let i = 0; i < grassCount; i++) {
+      backdropGrass.push({
+        x: (i / grassCount) * w + (Math.random() * 6 - 3),
+        height: (height * 0.3) + Math.random() * (height * 0.35),
+        width: 3.0 + Math.random() * 1.5,
+        color: ['#4caf50', '#66bb6a', '#388e3c', '#81c784'][Math.floor(Math.random() * 4)],
+        bendOffset: Math.random() * Math.PI * 2,
+        bendSpeed: 0.8 + Math.random() * 0.4,
+        maxBend: 10 + Math.random() * 12
+      });
+    }
 
-    <!-- Flower 6: Big Rose -->
-    <g transform="translate(365, 70)">
-      <path d="M0,46 Q6,22 0,0" stroke="#2e7d32" stroke-width="3" fill="none" />
-      <circle cx="-7" cy="-5" r="8.5" fill="#ff2d55" />
-      <circle cx="7" cy="-5" r="8.5" fill="#ff2d55" />
-      <circle cx="0" cy="6" r="8.5" fill="#e11d48" />
-      <circle cx="0" cy="0" r="5.5" fill="#ffd54f" />
-    </g>
+    // 2. Dense, multi-layered flowers (60+ flowers across the bottom)
+    const flowerCount = Math.max(35, Math.floor(w / 14));
+    for (let i = 0; i < flowerCount; i++) {
+      const style = flowerStyles[Math.floor(Math.random() * flowerStyles.length)];
+      const color = style.colors[Math.floor(Math.random() * style.colors.length)];
+      const layer = Math.random(); // 0 = back, 1 = front
 
-    <!-- Flower 7: Daisy -->
-    <g transform="translate(430, 82)">
-      <path d="M0,34 Q-4,16 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="5" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
+      flowers.push({
+        x: (i / flowerCount) * w + (Math.random() * 16 - 8),
+        stemHeight: (height * 0.28) + layer * (height * 0.52) + (Math.random() * 16),
+        style: style,
+        color: color,
+        centerColor: style.center,
+        radius: style.radius * (0.8 + layer * 0.45),
+        petals: style.petals,
+        bendOffset: Math.random() * Math.PI * 2,
+        bendSpeed: 0.9 + Math.random() * 0.45,
+        maxBend: 12 + Math.random() * 10,
+        leafSide: Math.random() > 0.5 ? 1 : -1,
+        leafHeight: 0.35 + Math.random() * 0.35
+      });
+    }
 
-    <!-- Flower 8: Golden Bloom -->
-    <g transform="translate(495, 75)">
-      <path d="M0,41 Q5,18 0,0" stroke="#2e7d32" stroke-width="2.6" fill="none" />
-      <circle cx="-6" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="6" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="-6" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="6" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="0" r="4.5" fill="#5d4037" />
-    </g>
+    // Sort so back flowers render first and front flowers layer nicely
+    flowers.sort((a, b) => a.stemHeight - b.stemHeight);
+  }
 
-    <!-- Flower 9: Rosebud -->
-    <g transform="translate(560, 78)">
-      <path d="M0,38 Q-4,18 0,0" stroke="#2e7d32" stroke-width="2.6" fill="none" />
-      <circle cx="-6" cy="-4" r="7" fill="#ff4d6d" />
-      <circle cx="6" cy="-4" r="7" fill="#ff4d6d" />
-      <circle cx="0" cy="5" r="7" fill="#e11d48" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
+  function resize() {
+    if (!canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth || document.documentElement.clientWidth || 400;
+    height = Math.round(containerEl?.clientHeight || 160);
 
-    <!-- Flower 10: Center Grand Rose -->
-    <g transform="translate(625, 68)">
-      <path d="M0,48 Q5,24 0,0" stroke="#2e7d32" stroke-width="3" fill="none" />
-      <circle cx="-8" cy="-5" r="9" fill="#e11d48" />
-      <circle cx="8" cy="-5" r="9" fill="#e11d48" />
-      <circle cx="0" cy="6" r="9" fill="#ff2d55" />
-      <circle cx="0" cy="0" r="5.8" fill="#ffd54f" />
-    </g>
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
-    <!-- Flower 11: Lavender Bell -->
-    <g transform="translate(690, 76)">
-      <path d="M0,40 Q-5,18 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-5" cy="0" r="6" fill="#ba68c8" />
-      <circle cx="5" cy="0" r="6" fill="#ba68c8" />
-      <circle cx="0" cy="-5" r="6" fill="#ce93d8" />
-      <circle cx="0" cy="5" r="6" fill="#ab47bc" />
-      <circle cx="0" cy="0" r="3.5" fill="#ffffff" />
-    </g>
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
 
-    <!-- Flower 12: Sunflower -->
-    <g transform="translate(755, 72)">
-      <path d="M0,44 Q6,20 0,0" stroke="#2e7d32" stroke-width="2.8" fill="none" />
-      <circle cx="-7" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="7" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="-7" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="7" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="0" r="4.8" fill="#5d4037" />
-    </g>
+    initGarden();
+  }
 
-    <!-- Flower 13: Pink Blossom -->
-    <g transform="translate(820, 80)">
-      <path d="M0,36 Q-4,18 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-6" cy="-4" r="7" fill="#ff758f" />
-      <circle cx="6" cy="-4" r="7" fill="#ff758f" />
-      <circle cx="0" cy="5" r="7" fill="#ff4d6d" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
+  function handlePointer(e) {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+  }
 
-    <!-- Flower 14: White Daisy -->
-    <g transform="translate(885, 78)">
-      <path d="M0,38 Q5,18 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="5" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
+  function handlePointerLeave() {
+    mouseX = -1000;
+    mouseY = -1000;
+  }
 
-    <!-- Flower 15: Ruby Rose -->
-    <g transform="translate(950, 70)">
-      <path d="M0,46 Q-6,22 0,0" stroke="#2e7d32" stroke-width="3" fill="none" />
-      <circle cx="-7" cy="-5" r="8.5" fill="#e11d48" />
-      <circle cx="7" cy="-5" r="8.5" fill="#e11d48" />
-      <circle cx="0" cy="6" r="8.5" fill="#ff2d55" />
-      <circle cx="0" cy="0" r="5.5" fill="#ffd54f" />
-    </g>
+  onMount(() => {
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('pointermove', handlePointer, { passive: true });
+    window.addEventListener('pointerdown', handlePointer, { passive: true });
+    window.addEventListener('pointerup', handlePointerLeave, { passive: true });
+    window.addEventListener('touchend', handlePointerLeave, { passive: true });
 
-    <!-- Flower 16: Golden Blossom -->
-    <g transform="translate(1015, 76)">
-      <path d="M0,40 Q4,18 0,0" stroke="#2e7d32" stroke-width="2.6" fill="none" />
-      <circle cx="-6" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="6" cy="0" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="-6" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="6" r="6.5" fill="#ffd166" />
-      <circle cx="0" cy="0" r="4.5" fill="#5d4037" />
-    </g>
+    const ctx = canvas.getContext('2d');
+    let time = 0;
 
-    <!-- Flower 17: Daisy -->
-    <g transform="translate(1080, 82)">
-      <path d="M0,34 Q-4,16 0,0" stroke="#2e7d32" stroke-width="2.5" fill="none" />
-      <circle cx="-5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="5" cy="-4" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="5" r="6.5" fill="#ffffff" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
+    function render() {
+      time += 0.024;
+      ctx.clearRect(0, 0, width, height);
 
-    <!-- Flower 18: Rosebud -->
-    <g transform="translate(1145, 78)">
-      <path d="M0,38 Q5,18 0,0" stroke="#2e7d32" stroke-width="2.6" fill="none" />
-      <circle cx="-6" cy="-4" r="7" fill="#ff4d6d" />
-      <circle cx="6" cy="-4" r="7" fill="#ff4d6d" />
-      <circle cx="0" cy="5" r="7" fill="#e11d48" />
-      <circle cx="0" cy="0" r="4.5" fill="#ffd54f" />
-    </g>
-  </svg>
+      // Soft green ground base
+      const groundGrad = ctx.createLinearGradient(0, height - 30, 0, height);
+      groundGrad.addColorStop(0, 'rgba(76, 175, 80, 0.45)');
+      groundGrad.addColorStop(0.5, '#4caf50');
+      groundGrad.addColorStop(1, '#2e7d32');
+
+      ctx.beginPath();
+      ctx.moveTo(0, height);
+      ctx.lineTo(0, height - 20);
+      for (let x = 0; x <= width; x += 25) {
+        const wave = Math.sin(x * 0.02 + time * 0.5) * 3;
+        ctx.lineTo(x, height - 20 + wave);
+      }
+      ctx.lineTo(width, height);
+      ctx.closePath();
+      ctx.fillStyle = groundGrad;
+      ctx.fill();
+
+      // Soft background grass hints
+      for (const blade of backdropGrass) {
+        const wind = Math.sin(time * blade.bendSpeed + blade.bendOffset) * blade.maxBend;
+        const tipX = blade.x + wind;
+        const tipY = height - blade.height;
+        const cpx = blade.x + wind * 0.4;
+        const cpy = height - blade.height * 0.55;
+
+        ctx.beginPath();
+        ctx.moveTo(blade.x - blade.width * 0.5, height - 10);
+        ctx.quadraticCurveTo(cpx, cpy, tipX, tipY);
+        ctx.quadraticCurveTo(cpx + 1, cpy, blade.x + blade.width * 0.5, height - 10);
+        ctx.fillStyle = blade.color;
+        ctx.fill();
+      }
+
+      // Blooming Flowers Layer
+      for (const flower of flowers) {
+        let wind = Math.sin(time * flower.bendSpeed + flower.bendOffset) * flower.maxBend;
+
+        // Interactive touch response: flowers bend away from touch
+        const dist = Math.hypot(flower.x - mouseX, height - mouseY);
+        if (dist < 110) {
+          const push = (1 - dist / 110) * 38;
+          wind += (flower.x > mouseX ? 1 : -1) * push;
+        }
+
+        const headX = flower.x + wind;
+        const headY = height - flower.stemHeight;
+        const cpx = flower.x + wind * 0.45;
+        const cpy = height - flower.stemHeight * 0.5;
+
+        // Green Stem
+        ctx.beginPath();
+        ctx.moveTo(flower.x, height - 8);
+        ctx.quadraticCurveTo(cpx, cpy, headX, headY);
+        ctx.strokeStyle = '#388e3c';
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
+
+        // Stem Leaf
+        const leafY = height - flower.stemHeight * flower.leafHeight;
+        const leafX = flower.x + wind * flower.leafHeight;
+        ctx.beginPath();
+        ctx.ellipse(
+          leafX + flower.leafSide * 9,
+          leafY,
+          8,
+          3.5,
+          flower.leafSide * 0.4,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = '#4caf50';
+        ctx.fill();
+
+        // Flower Blossom Head
+        ctx.save();
+        ctx.translate(headX, headY);
+        ctx.rotate(wind * 0.04);
+
+        // Petals Layer
+        const petalAngleStep = (Math.PI * 2) / flower.petals;
+        for (let p = 0; p < flower.petals; p++) {
+          const angle = p * petalAngleStep;
+          const px = Math.cos(angle) * (flower.radius * 0.7);
+          const py = Math.sin(angle) * (flower.radius * 0.7);
+
+          ctx.beginPath();
+          ctx.ellipse(
+            px,
+            py,
+            flower.radius * 0.65,
+            flower.radius * 0.45,
+            angle,
+            0,
+            Math.PI * 2
+          );
+          ctx.fillStyle = flower.color;
+          ctx.fill();
+
+          // Petal edge highlight
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+
+        // Flower Center Core
+        ctx.beginPath();
+        ctx.arc(0, 0, flower.radius * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = flower.centerColor;
+        ctx.fill();
+
+        // Flower Core Sparkle Dot
+        ctx.beginPath();
+        ctx.arc(-flower.radius * 0.1, -flower.radius * 0.1, flower.radius * 0.15, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      animId = requestAnimationFrame(render);
+    }
+
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('pointermove', handlePointer);
+      window.removeEventListener('pointerdown', handlePointer);
+      window.removeEventListener('pointerup', handlePointerLeave);
+      window.removeEventListener('touchend', handlePointerLeave);
+    };
+  });
+</script>
+
+<div bind:this={containerEl} class="flower-garden-container" aria-hidden="true">
+  <canvas
+    bind:this={canvas}
+    onpointermove={handlePointer}
+    onpointerdown={handlePointer}
+    onpointerleave={handlePointerLeave}
+  ></canvas>
 </div>
 
 <style>
-  .grass-fixed-container {
+  /* Fixed Bottom Flower Garden across Page 1, Page 2, and Page 3 */
+  .flower-garden-container {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;
-    height: 120px;
-    z-index: 20;
-    pointer-events: none;
+    height: clamp(135px, 18vh, 185px);
+    z-index: 15;
     overflow: hidden;
-    contain: strict;
+    pointer-events: none;
+    filter: drop-shadow(0 -4px 12px rgba(233, 30, 99, 0.18));
+    transform: translateZ(0);
   }
 
-  .garden-svg {
+  canvas {
     display: block;
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 -3px 8px rgba(0, 0, 0, 0.08));
+    pointer-events: none;
   }
 </style>

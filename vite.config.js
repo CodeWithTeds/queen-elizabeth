@@ -19,6 +19,7 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
+    include: ['three', 'vanta/dist/vanta.clouds.min.js', 'canvas-confetti'],
     entries: ['./index.html']
   }
 });
