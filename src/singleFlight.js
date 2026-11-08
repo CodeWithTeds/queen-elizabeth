@@ -12,30 +12,27 @@ export function preloadHeroSingleFlight() {
       return;
     }
 
-    // 1. Single flight for hero image (main-page.webp / main-page.png)
-    const img = new Image();
-    img.src = '/images/main-page.webp';
-    img.onerror = () => {
-      img.src = '/images/main-page.png';
-    };
-
-    const onHeroDone = () => {
-      // 2. Also pre-decode background image in same flight
-      const bgImg = new Image();
-      bgImg.src = '/images/bg.png';
-      if (typeof bgImg.decode === 'function') {
-        bgImg.decode().catch(() => {}).finally(() => resolve(true));
-      } else {
-        bgImg.onload = () => resolve(true);
-        bgImg.onerror = () => resolve(true);
+    let settled = false;
+    const finish = () => {
+      if (!settled) {
+        settled = true;
+        resolve(true);
       }
     };
 
-    if (typeof img.decode === 'function') {
-      img.decode().then(onHeroDone).catch(onHeroDone);
-    } else {
-      img.onload = onHeroDone;
-      img.onerror = onHeroDone;
+    // Safety timeout: never block navigation if network is slow
+    const timeoutTimer = setTimeout(finish, 600);
+
+    try {
+      const img = new Image();
+      img.src = '/images/main-page.webp';
+      img.onload = finish;
+      img.onerror = finish;
+      if (typeof img.decode === 'function') {
+        img.decode().then(finish).catch(finish);
+      }
+    } catch (_) {
+      finish();
     }
   });
 

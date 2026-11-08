@@ -180,17 +180,22 @@
       <!-- PAGE 1: Main Screen with Elizabeth (Always ready) -->
       <section class="page-snap-screen page-1">
         <div class="stage">
-          <picture>
+          <picture class="hero-picture">
             <source srcset="/images/main-page.webp" type="image/webp">
-            <source srcset="/images/main-page.avif" type="image/avif">
             <img 
               src="/images/main-page.png" 
-              alt="Elizabeth" 
+              alt="Princess Elizabeth" 
               class="center-image" 
               draggable="false"
               loading="eager"
               fetchpriority="high"
               decoding="sync"
+              onerror={(e) => {
+                if (!e.currentTarget.dataset.retried) {
+                  e.currentTarget.dataset.retried = '1';
+                  e.currentTarget.src = '/images/main.png';
+                }
+              }}
             />
           </picture>
         </div>
@@ -558,6 +563,10 @@
     position: relative;
     z-index: 10;
     pointer-events: auto;
+  }
+
+  .hero-picture {
+    display: contents;
   }
 
   .center-image {
