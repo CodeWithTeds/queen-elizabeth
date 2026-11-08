@@ -552,8 +552,22 @@
   <!-- PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) -->
   <section class="page-snap-screen page-gifts">
     <div class="gifts-mobile-layout">
+      <span class="gifts-royal-tag">👑 A Gentle Note</span>
+      <h2 class="gifts-royal-title">Baby Essentials</h2>
+
       <p class="gifts-solo-message">
-        “Your presence is our greatest gift, but gifts are warmly appreciated.”
+        “Your presence on our little Princess Elizabeth's special day is our greatest gift. Should you wish to bless her with a gift, essential baby items are warmly appreciated:”
+      </p>
+
+      <div class="essentials-grid">
+        <span class="essential-item">🍼 Milk</span>
+        <span class="essential-item">🧴 Baby Lotion</span>
+        <span class="essential-item">🫧 Body Wash</span>
+        <span class="essential-item">🧺 Laundry Detergent</span>
+      </div>
+
+      <p class="gifts-thank-you">
+        Thank you for your love and blessings! ✨
       </p>
     </div>
   </section>
@@ -1388,12 +1402,14 @@
   /* PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) */
   .gifts-mobile-layout {
     width: 100%;
-    max-width: min(90vw, 440px);
+    max-width: min(90vw, 400px);
     height: 100%;
     max-height: calc(100dvh - 140px);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     position: relative;
     z-index: 25;
     pointer-events: auto;
@@ -1403,13 +1419,32 @@
     margin: 0 auto;
   }
 
+  .gifts-royal-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #9d174d;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+
+  .gifts-royal-title {
+    font-family: 'Waltograph', 'Cinzel Decorative', cursive, sans-serif;
+    font-size: clamp(1.8rem, 5.5vw, 2.3rem);
+    color: #831843;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9), 0 2px 10px rgba(225, 29, 72, 0.15);
+  }
+
   .gifts-solo-message {
     font-family: 'Playfair Display', Didot, 'Bodoni MT', Georgia, serif;
-    font-size: clamp(0.88rem, 2.7vw, 1.05rem);
+    font-size: clamp(0.85rem, 2.6vw, 0.96rem);
     font-weight: 600;
     font-style: italic;
-    line-height: 1.6;
-    letter-spacing: 0.3px;
+    line-height: 1.55;
+    letter-spacing: 0.2px;
     color: #2e101a;
     text-shadow: 0 1px 3px rgba(255, 255, 255, 0.95);
     margin: 0;
@@ -1417,6 +1452,40 @@
     border: none;
     background: transparent;
     box-shadow: none;
+  }
+
+  .essentials-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px 14px;
+    max-width: 290px;
+    margin: 4px 0 2px 0;
+  }
+
+  .essential-item {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(0.82rem, 2.5vw, 0.92rem);
+    font-weight: 600;
+    color: #4a1525;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95);
+  }
+
+  .gifts-thank-you {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(0.8rem, 2.4vw, 0.88rem);
+    font-weight: 600;
+    color: #9f1239;
+    margin: 2px 0 0 0;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
   }
 
   /* Floating Ambient Elements */
