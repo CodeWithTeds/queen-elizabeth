@@ -90,6 +90,47 @@ export const GODPARENTS = [
     fullName: 'Tito Ariel',
     role: 'Ninong'
   },
+  // Celebrity Ninongs
+  {
+    slug: 'dingdong',
+    aliases: ['dingdong', 'dingdong-dantes', 'dingdongdantes', 'dantes'],
+    title: 'Ninong',
+    firstName: 'Dingdong',
+    fullName: 'Dingdong Dantes',
+    role: 'Ninong'
+  },
+  {
+    slug: 'piolo',
+    aliases: ['piolo', 'piolo-pascual', 'piolopascual', 'pascual', 'papa-p'],
+    title: 'Ninong',
+    firstName: 'Piolo',
+    fullName: 'Piolo Pascual',
+    role: 'Ninong'
+  },
+  {
+    slug: 'alden',
+    aliases: ['alden', 'alden-richards', 'aldenrichards', 'richards'],
+    title: 'Ninong',
+    firstName: 'Alden',
+    fullName: 'Alden Richards',
+    role: 'Ninong'
+  },
+  {
+    slug: 'coco',
+    aliases: ['coco', 'coco-martin', 'cocomartin', 'martin', 'cardodalisay'],
+    title: 'Ninong',
+    firstName: 'Coco',
+    fullName: 'Coco Martin',
+    role: 'Ninong'
+  },
+  {
+    slug: 'jericho',
+    aliases: ['jericho', 'jericho-rosales', 'jerichorosales', 'echo'],
+    title: 'Ninong',
+    firstName: 'Jericho',
+    fullName: 'Jericho Rosales',
+    role: 'Ninong'
+  },
 
   // Ninangs (Godmothers)
   {
@@ -146,6 +187,47 @@ export const GODPARENTS = [
     title: 'Ninang',
     firstName: 'Maria Fe',
     fullName: 'Maria Fe Ferarriz',
+    role: 'Ninang'
+  },
+  // Celebrity Ninangs
+  {
+    slug: 'marian',
+    aliases: ['marian', 'marian-rivera', 'marianrivera', 'marian-dantes'],
+    title: 'Ninang',
+    firstName: 'Marian',
+    fullName: 'Marian Rivera',
+    role: 'Ninang'
+  },
+  {
+    slug: 'kathryn',
+    aliases: ['kathryn', 'kathryn-bernardo', 'kathrynbernardo', 'kath'],
+    title: 'Ninang',
+    firstName: 'Kathryn',
+    fullName: 'Kathryn Bernardo',
+    role: 'Ninang'
+  },
+  {
+    slug: 'anne',
+    aliases: ['anne', 'anne-curtis', 'annecurtis', 'curtis'],
+    title: 'Ninang',
+    firstName: 'Anne',
+    fullName: 'Anne Curtis',
+    role: 'Ninang'
+  },
+  {
+    slug: 'bea',
+    aliases: ['bea', 'bea-alonzo', 'beaalonzo', 'alonzo'],
+    title: 'Ninang',
+    firstName: 'Bea',
+    fullName: 'Bea Alonzo',
+    role: 'Ninang'
+  },
+  {
+    slug: 'heart',
+    aliases: ['heart', 'heart-evangelista', 'heartevangelista', 'evangelista'],
+    title: 'Ninang',
+    firstName: 'Heart',
+    fullName: 'Heart Evangelista',
     role: 'Ninang'
   }
 ];

@@ -10,7 +10,10 @@
   import GrandDukeWelcome from './GrandDukeWelcome.svelte';
   import RoyalNotFound from './RoyalNotFound.svelte';
   import { preloadHeroSingleFlight } from './singleFlight.js';
-  import { resolveGuestFromUrl } from './guestRegistry.js';
+  import { resolveGuestFromUrl, GODPARENTS } from './guestRegistry.js';
+
+  const ninongsList = GODPARENTS.filter(g => g.role === 'Ninong');
+  const ninangsList = GODPARENTS.filter(g => g.role === 'Ninang');
 
   let vantaElement;
   let vantaEffect;
@@ -328,7 +331,7 @@
     <div class="church-mobile-layout">
       <!-- Church Title & Historical Heritage Text -->
       <header class="church-header-info">
-        <h3 class="church-time-title">10:00 AM to 11:00 AM</h3>
+        <h3 class="church-time-title">December 4 • 10:00 AM to 11:00 AM</h3>
         <h2 class="church-title">St. Raphael the Archangel Parish - Montalban</h2>
         <p class="church-desc">
           The seed of St. Raphael the Archangel Parish was a chapel built in Brgy. San Rafael, Rodriguez, Rizal, which was then part of the parish of Our Lady of the Most Holy Rosary.
@@ -529,7 +532,7 @@
         >
           <span class="dest-btn-icon">⛪</span>
           <div class="dest-btn-info">
-            <span class="dest-btn-tag">Church Ceremony • 10:00 AM</span>
+            <span class="dest-btn-tag">Church Ceremony • December 4 • 10:00 AM</span>
             <span class="dest-btn-name">St. Raphael the Archangel Parish</span>
             <span class="dest-btn-sub">P. Rodriguez St, Rodriguez, Rizal</span>
           </div>
@@ -555,7 +558,42 @@
     </div>
   </section>
 
-  <!-- PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) -->
+  <!-- PAGE 6: Ninongs & Ninangs (Royal Godparents List - 100% Borderless & Boxless) -->
+  <section class="page-snap-screen page-godparents">
+    <div class="godparents-mobile-layout">
+      <header class="godparents-header">
+        <div class="godparents-royal-tag">
+          <span class="crown-sparkle">👑</span>
+          <span>Royal Godparents</span>
+        </div>
+        <h2 class="godparents-title">Ninongs &amp; Ninangs</h2>
+      </header>
+
+      <div class="godparents-columns">
+        <!-- Ninongs Column -->
+        <div class="godparent-col">
+          <h3 class="col-heading">Ninongs</h3>
+          <ul class="names-list">
+            {#each ninongsList as n (n.slug)}
+              <li class="name-item">{n.fullName}</li>
+            {/each}
+          </ul>
+        </div>
+
+        <!-- Ninangs Column -->
+        <div class="godparent-col">
+          <h3 class="col-heading">Ninangs</h3>
+          <ul class="names-list">
+            {#each ninangsList as n (n.slug)}
+              <li class="name-item">{n.fullName}</li>
+            {/each}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 7: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) -->
   <section class="page-snap-screen page-gifts">
     <div class="gifts-mobile-layout">
       <div class="gifts-content-wrap">
@@ -1412,7 +1450,133 @@
     flex-shrink: 0;
   }
 
-  /* PAGE 6: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) */
+  /* PAGE 6: Ninongs & Ninangs (Royal Godparents List - 100% Borderless & Boxless) */
+  .godparents-mobile-layout {
+    width: 100%;
+    max-width: min(92vw, 420px);
+    height: 100%;
+    max-height: calc(100dvh - 140px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 25;
+    pointer-events: auto;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 12px;
+    margin: 0 auto;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .godparents-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .godparents-royal-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.68rem, 2vw, 0.76rem);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #9d174d;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+    margin-bottom: 2px;
+  }
+
+  .godparents-title {
+    font-family: 'Waltograph', 'Cinzel Decorative', cursive, sans-serif;
+    font-size: clamp(1.8rem, 5.8vw, 2.3rem);
+    color: #831843;
+    margin: 0;
+    line-height: 1.1;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9), 0 2px 10px rgba(225, 29, 72, 0.15);
+  }
+
+  .godparents-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    width: 100%;
+    max-width: 380px;
+    max-height: calc(100dvh - 190px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 4px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .godparents-columns::-webkit-scrollbar {
+    display: none;
+  }
+
+  .godparent-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .col-heading {
+    font-family: 'Playfair Display', Didot, 'Bodoni MT', Georgia, serif;
+    font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+    font-weight: 700;
+    font-style: italic;
+    color: #9f1239;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.5px;
+    border-bottom: 1.5px solid rgba(225, 29, 72, 0.35);
+    padding-bottom: 2px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+    position: sticky;
+    top: 0;
+    background: rgba(254, 215, 226, 0.85);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+  }
+
+  .names-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .name-item {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(0.68rem, 2.05vw, 0.77rem);
+    font-weight: 600;
+    color: #2e101a;
+    line-height: 1.25;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95);
+  }
+
+  /* PAGE 7: Gifts Dedicated Page (Solo Text Only - 100% Borderless & Boxless) */
   .gifts-mobile-layout {
     width: 100%;
     max-width: min(90vw, 440px);

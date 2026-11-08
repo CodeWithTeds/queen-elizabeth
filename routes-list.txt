@@ -71,6 +71,36 @@ Production Domain: https://queen-elizabeth.vercel.app
     Local Link: http://localhost:5173/tito-ariel
     Displays:   "Ninong Tito Ariel"
 
+12. Dingdong Dantes
+    Route: /dingdong
+    Live Link:  https://queen-elizabeth.vercel.app/dingdong
+    Local Link: http://localhost:5173/dingdong
+    Displays:   "Ninong Dingdong"
+
+13. Piolo Pascual
+    Route: /piolo
+    Live Link:  https://queen-elizabeth.vercel.app/piolo
+    Local Link: http://localhost:5173/piolo
+    Displays:   "Ninong Piolo"
+
+14. Alden Richards
+    Route: /alden
+    Live Link:  https://queen-elizabeth.vercel.app/alden
+    Local Link: http://localhost:5173/alden
+    Displays:   "Ninong Alden"
+
+15. Coco Martin
+    Route: /coco
+    Live Link:  https://queen-elizabeth.vercel.app/coco
+    Local Link: http://localhost:5173/coco
+    Displays:   "Ninong Coco"
+
+16. Jericho Rosales
+    Route: /jericho
+    Live Link:  https://queen-elizabeth.vercel.app/jericho
+    Local Link: http://localhost:5173/jericho
+    Displays:   "Ninong Jericho"
+
 
 --- NINANG (GODMOTHERS) ---
 
@@ -115,6 +145,36 @@ Production Domain: https://queen-elizabeth.vercel.app
    Live Link:  https://queen-elizabeth.vercel.app/maria-fe
    Local Link: http://localhost:5173/maria-fe
    Displays:   "Ninang Maria Fe"
+
+8. Marian Rivera
+   Route: /marian
+   Live Link:  https://queen-elizabeth.vercel.app/marian
+   Local Link: http://localhost:5173/marian
+   Displays:   "Ninang Marian"
+
+9. Kathryn Bernardo
+   Route: /kathryn
+   Live Link:  https://queen-elizabeth.vercel.app/kathryn
+   Local Link: http://localhost:5173/kathryn
+   Displays:   "Ninang Kathryn"
+
+10. Anne Curtis
+    Route: /anne
+    Live Link:  https://queen-elizabeth.vercel.app/anne
+    Local Link: http://localhost:5173/anne
+    Displays:   "Ninang Anne"
+
+11. Bea Alonzo
+    Route: /bea
+    Live Link:  https://queen-elizabeth.vercel.app/bea
+    Local Link: http://localhost:5173/bea
+    Displays:   "Ninang Bea"
+
+12. Heart Evangelista
+    Route: /heart
+    Live Link:  https://queen-elizabeth.vercel.app/heart
+    Local Link: http://localhost:5173/heart
+    Displays:   "Ninang Heart"
 
 
 =======================================================
