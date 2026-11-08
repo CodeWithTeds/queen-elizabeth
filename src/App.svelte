@@ -300,23 +300,26 @@
     {/each}
   </div>
 
-  <!-- PAGE 1: Main Screen with Elizabeth, 3D WebGL Butterflies, and Blooming Garden -->
+  <!-- PAGE 1: Main Screen with Elizabeth, Floating Butterflies, and Blooming Garden -->
   <section class="page-snap-screen page-1">
     <div class="stage">
-      <img 
-        src="/images/main-page.avif" 
-        alt="Elizabeth" 
-        class="center-image" 
-        draggable="false"
-        width="1858"
-        height="2844"
-        loading="eager"
-        fetchpriority="high"
-        decoding="sync"
-      />
+      <picture class="stage-picture">
+        <source srcset="/images/main-page.avif" type="image/avif" />
+        <source srcset="/images/main-page.webp" type="image/webp" />
+        <img 
+          src="/images/main-page.png" 
+          alt="Princess Elizabeth" 
+          class="center-image" 
+          draggable="false"
+          width="1858"
+          height="2844"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </picture>
     </div>
 
-    <!-- 3D WebGL Butterflies Fluttering Around Flowers & Elizabeth -->
+    <!-- Ultra-lightweight Butterflies Fluttering Around Flowers & Elizabeth -->
     <Butterflies3D />
   </section>
 
@@ -651,6 +654,16 @@
     position: relative;
     z-index: 10;
     pointer-events: auto;
+  }
+
+  .stage-picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 90vw;
+    max-height: 82dvh;
+    width: auto;
+    height: auto;
   }
 
   .center-image {
