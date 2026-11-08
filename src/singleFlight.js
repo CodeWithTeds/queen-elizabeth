@@ -12,9 +12,12 @@ export function preloadHeroSingleFlight() {
       return;
     }
 
-    // 1. Single flight for hero image (main-page.avif)
+    // 1. Single flight for hero image (main-page.webp / main-page.png)
     const img = new Image();
-    img.src = '/images/main-page.avif';
+    img.src = '/images/main-page.webp';
+    img.onerror = () => {
+      img.src = '/images/main-page.png';
+    };
 
     const onHeroDone = () => {
       // 2. Also pre-decode background image in same flight
