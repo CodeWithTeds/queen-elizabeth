@@ -150,7 +150,9 @@
     }, 60);
   }
 
-  // Balloon colors matching her red princess dress and pink theme
+  // Pre-generate balloons for ONE-TIME celebratory entrance release
+  let showBalloons = $state(true);
+
   const balloonColors = [
     '#e11d48', // Ruby red
     '#ff2d55', // Bright pink
@@ -160,13 +162,12 @@
     '#ff4081'  // Hot pink
   ];
 
-  // Pre-generate balloons for continuous gentle floating
   const balloons = Array.from({ length: 12 }).map((_, i) => ({
     id: i,
-    left: 4 + (i * 8) + (Math.random() * 4 - 2),
-    duration: 9 + (i % 5) * 2 + Math.random() * 2,
-    delay: (i * 0.9) % 7,
-    scale: 0.75 + (i % 4) * 0.12,
+    left: 4 + (i * 7.8) + (Math.random() * 3 - 1.5),
+    duration: 6.8 + (i % 4) * 0.7,
+    delay: (i * 0.22) + (Math.random() * 0.15),
+    scale: 0.75 + (i % 4) * 0.1,
     color: balloonColors[i % balloonColors.length]
   }));
 
@@ -262,22 +263,24 @@
 
   <!-- Ambient Floating Balloons and Hearts (fixed across all pages) -->
   <div class="floating-elements" aria-hidden="true">
-    {#each balloons as b (b.id)}
-      <div 
-        class="balloon" 
-        style="
-          left: {b.left}%; 
-          animation-duration: {b.duration}s; 
-          animation-delay: -{b.delay}s;
-          --balloon-color: {b.color};
-          --scale: {b.scale};
-        "
-      >
-        <div class="balloon-body"></div>
-        <div class="balloon-knot"></div>
-        <div class="balloon-string"></div>
-      </div>
-    {/each}
+    {#if showBalloons}
+      {#each balloons as b (b.id)}
+        <div 
+          class="balloon" 
+          style="
+            left: {b.left}%; 
+            --duration: {b.duration}s; 
+            --delay: {b.delay}s;
+            --balloon-color: {b.color};
+            --scale: {b.scale};
+          "
+        >
+          <div class="balloon-body"></div>
+          <div class="balloon-knot"></div>
+          <div class="balloon-string"></div>
+        </div>
+      {/each}
+    {/if}
 
     {#each hearts as h (h.id)}
       <div 
@@ -1479,17 +1482,17 @@
     z-index: 5;
   }
 
-  /* Balloons */
+  /* Balloons (One-time opening celebration release) */
   .balloon {
     position: absolute;
-    bottom: -140px;
+    bottom: -150px;
     display: flex;
     flex-direction: column;
     align-items: center;
     will-change: transform;
-    animation: floatUp infinite linear;
+    animation: floatUpOnce var(--duration) cubic-bezier(0.25, 0.8, 0.5, 1) var(--delay) forwards;
     transform: scale(var(--scale));
-    opacity: 0.9;
+    opacity: 0;
   }
 
   .balloon-body {
@@ -1514,22 +1517,19 @@
     background: rgba(120, 100, 110, 0.4);
   }
 
-  @keyframes floatUp {
+  @keyframes floatUpOnce {
     0% {
       transform: translateY(0) scale(var(--scale)) rotate(-4deg);
       opacity: 0;
     }
     10% {
-      opacity: 0.92;
+      opacity: 0.95;
     }
-    50% {
-      transform: translateY(-60vh) scale(var(--scale)) rotate(4deg);
-    }
-    90% {
-      opacity: 0.92;
+    85% {
+      opacity: 0.95;
     }
     100% {
-      transform: translateY(-130vh) scale(var(--scale)) rotate(-3deg);
+      transform: translateY(calc(-100dvh - 220px)) scale(var(--scale)) rotate(4deg);
       opacity: 0;
     }
   }

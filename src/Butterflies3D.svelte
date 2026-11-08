@@ -1,320 +1,306 @@
-<script>
-  import { onMount, onDestroy } from 'svelte';
-  import * as THREE from 'three';
+<!-- Ultra-Lightweight Hardware-Accelerated CSS 3D Butterflies -->
+<!-- 0% CPU, No WebGL overhead, 60fps GPU compositor smooth -->
+<div class="butterflies-container" aria-hidden="true">
+  <!-- Butterfly 1: Princess Rose (Left / Center) -->
+  <div class="butterfly-flight flight-rose">
+    <div class="butterfly butterfly-rose">
+      <div class="wing wing-left">
+        <svg viewBox="0 0 40 50" class="wing-svg">
+          <defs>
+            <linearGradient id="rose-grad-l" x1="100%" y1="50%" x2="0%" y2="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+              <stop offset="30%" stop-color="#ff758f" stop-opacity="0.95" />
+              <stop offset="80%" stop-color="#e11d48" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#9f1239" stop-opacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M40,25 C35,10 18,2 4,8 C-4,12 2,28 16,30 C6,34 2,44 10,48 C18,51 32,42 40,28 Z" fill="url(#rose-grad-l)" />
+          <circle cx="12" cy="16" r="2.2" fill="#ffffff" opacity="0.85" />
+          <circle cx="18" cy="24" r="1.5" fill="#ffffff" opacity="0.85" />
+        </svg>
+      </div>
 
-  let container;
-  let renderer;
-  let scene;
-  let camera;
-  let animId;
+      <div class="body">
+        <div class="antennae"></div>
+        <div class="thorax"></div>
+      </div>
 
-  let targetPos = new THREE.Vector3(0, 0, 0);
-  let touchInfluence = 0;
+      <div class="wing wing-right">
+        <svg viewBox="0 0 40 50" class="wing-svg">
+          <defs>
+            <linearGradient id="rose-grad-r" x1="0%" y1="50%" x2="100%" y2="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+              <stop offset="30%" stop-color="#ff758f" stop-opacity="0.95" />
+              <stop offset="80%" stop-color="#e11d48" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#9f1239" stop-opacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M0,25 C5,10 22,2 36,8 C44,12 38,28 24,30 C34,34 38,44 30,48 C22,51 8,42 0,28 Z" fill="url(#rose-grad-r)" />
+          <circle cx="28" cy="16" r="2.2" fill="#ffffff" opacity="0.85" />
+          <circle cx="22" cy="24" r="1.5" fill="#ffffff" opacity="0.85" />
+        </svg>
+      </div>
+    </div>
+  </div>
 
-  // Butterfly parameters
-  const butterflyCount = 5;
-  const butterflies = [];
+  <!-- Butterfly 2: Fairy Gold (Right / Center) -->
+  <div class="butterfly-flight flight-gold">
+    <div class="butterfly butterfly-gold">
+      <div class="wing wing-left">
+        <svg viewBox="0 0 40 50" class="wing-svg">
+          <defs>
+            <linearGradient id="gold-grad-l" x1="100%" y1="50%" x2="0%" y2="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+              <stop offset="35%" stop-color="#ffd166" stop-opacity="0.95" />
+              <stop offset="80%" stop-color="#f59e0b" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#b45309" stop-opacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M40,25 C35,10 18,2 4,8 C-4,12 2,28 16,30 C6,34 2,44 10,48 C18,51 32,42 40,28 Z" fill="url(#gold-grad-l)" />
+          <circle cx="12" cy="16" r="2" fill="#ffffff" opacity="0.85" />
+        </svg>
+      </div>
 
-  // Wing texture canvas generator
-  function createWingTexture(baseColor, spotColor, outlineColor) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext('2d');
+      <div class="body">
+        <div class="antennae"></div>
+        <div class="thorax"></div>
+      </div>
 
-    ctx.clearRect(0, 0, 256, 256);
+      <div class="wing wing-right">
+        <svg viewBox="0 0 40 50" class="wing-svg">
+          <defs>
+            <linearGradient id="gold-grad-r" x1="0%" y1="50%" x2="100%" y2="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+              <stop offset="35%" stop-color="#ffd166" stop-opacity="0.95" />
+              <stop offset="80%" stop-color="#f59e0b" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#b45309" stop-opacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M0,25 C5,10 22,2 36,8 C44,12 38,28 24,30 C34,34 38,44 30,48 C22,51 8,42 0,28 Z" fill="url(#gold-grad-r)" />
+          <circle cx="28" cy="16" r="2" fill="#ffffff" opacity="0.85" />
+        </svg>
+      </div>
+    </div>
+  </div>
 
-    // Left & Right wing drawing
-    function drawWingHalf(isLeft) {
-      ctx.save();
-      ctx.translate(128, 128);
-      if (isLeft) ctx.scale(-1, 1);
+  <!-- Butterfly 3: Royal Violet (Gentle Hover Lower Right) -->
+  <div class="butterfly-flight flight-violet">
+    <div class="butterfly butterfly-violet">
+      <div class="wing wing-left">
+        <svg viewBox="0 0 40 50" class="wing-svg">
+          <defs>
+            <linearGradient id="violet-grad-l" x1="100%" y1="50%" x2="0%" y2="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+              <stop offset="35%" stop-color="#ce93d8" stop-opacity="0.95" />
+              <stop offset="80%" stop-color="#ab47bc" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#6a1b9a" stop-opacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M40,25 C35,10 18,2 4,8 C-4,12 2,28 16,30 C6,34 2,44 10,48 C18,51 32,42 40,28 Z" fill="url(#violet-grad-l)" />
+          <circle cx="12" cy="16" r="1.8" fill="#ffffff" opacity="0.85" />
+        </svg>
+      </div>
 
-      // Main wing shape
-      ctx.beginPath();
-      ctx.moveTo(2, 0);
-      ctx.bezierCurveTo(20, -70, 95, -110, 115, -75);
-      ctx.bezierCurveTo(125, -50, 110, -10, 85, 5);
-      ctx.bezierCurveTo(110, 35, 110, 85, 75, 105);
-      ctx.bezierCurveTo(45, 115, 15, 75, 2, 20);
-      ctx.closePath();
+      <div class="body">
+        <div class="antennae"></div>
+        <div class="thorax"></div>
+      </div>
 
-      // Wing gradient fill
-      const grad = ctx.createRadialGradient(20, -10, 10, 70, 0, 100);
-      grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(0.35, baseColor);
-      grad.addColorStop(0.85, spotColor);
-      grad.addColorStop(1, outlineColor);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Wing borders and soft veins
-      ctx.strokeStyle = outlineColor;
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
-
-      // Fairy dots / spots
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.beginPath();
-      ctx.arc(80, -60, 5, 0, Math.PI * 2);
-      ctx.arc(95, -35, 4.2, 0, Math.PI * 2);
-      ctx.arc(68, 70, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    drawWingHalf(false); // Right wing
-    drawWingHalf(true);  // Left wing
-
-    const texture = new THREE.CanvasTexture(canvas);
-    return texture;
-  }
-
-  // Custom vertex shader for geometric 3D wing flapping
-  const vertexShader = `
-    uniform float uTime;
-    uniform float uFlapSpeed;
-    attribute float aPhase;
-    attribute float aSize;
-
-    varying vec2 vUv;
-    varying float vSide;
-
-    void main() {
-      vUv = uv;
-      vec3 pos = position;
-
-      // Determine wing side (-1 for left, +1 for right)
-      float side = sign(pos.x);
-      vSide = side;
-
-      // Wing flap angle using high-speed sine oscillation
-      float angle = sin(uTime * uFlapSpeed + aPhase) * 0.95;
-
-      // Flap rotation around spine (y-axis)
-      float cosA = cos(angle * side);
-      float sinA = sin(angle * side);
-
-      // Rotate x and z for authentic 3D wing dihedral motion
-      float newX = pos.x * cosA;
-      float newZ = pos.z - abs(pos.x) * sinA * 0.55;
-
-      // Add a slight aerodynamic ripple wave along wing length
-      newZ += sin(uTime * uFlapSpeed * 1.2 + pos.y * 3.0) * 0.08 * abs(pos.x);
-
-      pos.x = newX;
-      pos.z = newZ;
-
-      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-      gl_Position = projectionMatrix * mvPosition;
-    }
-  `;
-
-  // Fragment shader for glowing translucent wings
-  const fragmentShader = `
-    uniform sampler2D uTexture;
-    uniform vec3 uGlowColor;
-    varying vec2 vUv;
-    varying float vSide;
-
-    void main() {
-      vec4 texColor = texture2D(uTexture, vUv);
-      if (texColor.a < 0.1) discard;
-
-      // Soft fairy glow at wing edges
-      vec3 finalColor = mix(texColor.rgb, uGlowColor, 0.22);
-      gl_FragColor = vec4(finalColor, texColor.a * 0.95);
-    }
-  `;
-
-  function initThree() {
-    if (!container) return;
-
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-
-    scene = new THREE.Scene();
-
-    camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 18);
-
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    container.appendChild(renderer.domElement);
-
-    // Butterfly themes matching Elizabeth's Disney Fairytale palette
-    const butterflyThemes = [
-      { base: '#ff2d55', spot: '#ff80ab', outline: '#880e4f', glow: new THREE.Color(1, 0.4, 0.7) },  // Fairytale Rose
-      { base: '#ffd54f', spot: '#ff9800', outline: '#e65100', glow: new THREE.Color(1, 0.85, 0.3) }, // Monarch Gold
-      { base: '#ba68c8', spot: '#e040fb', outline: '#4a148c', glow: new THREE.Color(0.8, 0.4, 1) },  // Royal Violet
-      { base: '#00e5ff', spot: '#2979ff', outline: '#0d47a1', glow: new THREE.Color(0.3, 0.8, 1) },  // Cinderella Blue
-      { base: '#ff4081', spot: '#ffd54f', outline: '#c2185b', glow: new THREE.Color(1, 0.5, 0.8) }   // Princess Pink
-    ];
-
-    // Create 3D butterflies - SMALL & PETITE
-    for (let i = 0; i < butterflyCount; i++) {
-      const theme = butterflyThemes[i % butterflyThemes.length];
-      const texture = createWingTexture(theme.base, theme.spot, theme.outline);
-
-      // Smaller, dainty butterfly plane geometry: 1.15 wide x 1.05 high
-      const geom = new THREE.PlaneGeometry(1.15, 1.05, 8, 8);
-
-      const aPhase = new Float32Array(geom.attributes.position.count);
-      const aSize = new Float32Array(geom.attributes.position.count);
-      const phase = Math.random() * Math.PI * 2;
-      for (let j = 0; j < geom.attributes.position.count; j++) {
-        aPhase[j] = phase;
-        aSize[j] = 1.0;
-      }
-      geom.setAttribute('aPhase', new THREE.BufferAttribute(aPhase, 1));
-      geom.setAttribute('aSize', new THREE.BufferAttribute(aSize, 1));
-
-      const mat = new THREE.ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        uniforms: {
-          uTime: { value: 0 },
-          uFlapSpeed: { value: 18.0 + Math.random() * 6.0 }, // Fast authentic flap speed
-          uTexture: { value: texture },
-          uGlowColor: { value: theme.glow }
-        },
-        side: THREE.DoubleSide,
-        transparent: true,
-        depthWrite: false
-      });
-
-      const mesh = new THREE.Mesh(geom, mat);
-      scene.add(mesh);
-
-      // Distribute home centers across the entire screen width (from left -4.5 to right +4.5)
-      const spreadX = ((i / (butterflyCount - 1)) - 0.5) * 8.5; // -4.25, -2.12, 0, 2.12, 4.25
-      const startY = -4 + (i % 3) * 2.5;
-
-      butterflies.push({
-        mesh,
-        material: mat,
-        pos: new THREE.Vector3(spreadX, startY, (Math.random() - 0.5) * 3),
-        vel: new THREE.Vector3(
-          (Math.random() - 0.5) * 0.03,
-          (Math.random() - 0.5) * 0.03,
-          (Math.random() - 0.5) * 0.02
-        ),
-        target: new THREE.Vector3(spreadX, startY, 0),
-        centerX: spreadX,
-        rangeX: 1.8 + Math.random() * 1.5,
-        heightOffset: startY,
-        speed: 0.035 + Math.random() * 0.02,
-        flapSpeed: 18 + Math.random() * 6,
-        orbitSpeed: 0.45 + Math.random() * 0.35,
-        orbitOffset: i * (Math.PI * 2 / butterflyCount)
-      });
-    }
-  }
-
-  function handleResize() {
-    if (!container || !renderer || !camera) return;
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
-  }
-
-  function handlePointer(e) {
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = -(e.clientY / window.innerHeight) * 2 + 1;
-    targetPos.set(x * 6.5, y * 5.5, 1);
-    touchInfluence = 1.0; // momentary touch effect
-  }
-
-  onMount(() => {
-    initThree();
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('pointermove', handlePointer);
-    window.addEventListener('pointerdown', handlePointer);
-
-    let clock = new THREE.Clock();
-
-    function animate() {
-      animId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const time = clock.getElapsedTime();
-
-      butterflies.forEach((b, idx) => {
-        b.material.uniforms.uTime.value = time;
-
-        // Autonomous 3D flight paths spread evenly across the screen
-        const flightTime = time * b.orbitSpeed + b.orbitOffset;
-        const targetX = b.centerX + Math.sin(flightTime) * b.rangeX;
-        const targetY = b.heightOffset + Math.sin(time * 1.2 + idx) * 1.6;
-        const targetZ = Math.cos(flightTime * 0.9) * 2.0;
-
-        b.target.set(targetX, targetY, targetZ);
-
-        // Touch scatter: gently repels or dodges touch, then returns to natural path
-        if (touchInfluence > 0.04) {
-          const distToTouch = b.pos.distanceTo(targetPos);
-          if (distToTouch < 4.0) {
-            const push = b.pos.clone().sub(targetPos).normalize().multiplyScalar(touchInfluence * 0.03);
-            b.vel.add(push);
-          }
-        }
-
-        // Steer velocity toward target smoothly
-        const steer = b.target.clone().sub(b.pos).multiplyScalar(0.016);
-        b.vel.add(steer).clampLength(0.012, b.speed);
-        b.pos.add(b.vel);
-
-        // Update 3D mesh position
-        b.mesh.position.copy(b.pos);
-
-        // Bank and rotate towards direction of flight
-        const lookTarget = b.pos.clone().add(b.vel);
-        b.mesh.lookAt(lookTarget);
-
-        // Natural flutter roll & tilt
-        b.mesh.rotation.z += Math.sin(time * b.flapSpeed * 0.5) * 0.12;
-      });
-
-      // Decay touch influence so butterflies never get trapped anywhere
-      touchInfluence *= 0.96;
-
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('pointermove', handlePointer);
-      window.removeEventListener('pointerdown', handlePointer);
-      if (animId) cancelAnimationFrame(animId);
-
-      if (renderer) {
-        renderer.dispose();
-        if (renderer.domElement && renderer.domElement.parentElement) {
-          renderer.domElement.parentElement.removeChild(renderer.domElement);
-        }
-      }
-
-      butterflies.forEach(b => {
-        b.mesh.geometry.dispose();
-        b.material.dispose();
-      });
-    };
-  });
-</script>
-
-<div bind:this={container} class="butterflies-container" aria-hidden="true"></div>
+      <div class="wing wing-right">
+        <svg viewBox="0 0 40 50" class="wing-svg">
+          <defs>
+            <linearGradient id="violet-grad-r" x1="0%" y1="50%" x2="100%" y2="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+              <stop offset="35%" stop-color="#ce93d8" stop-opacity="0.95" />
+              <stop offset="80%" stop-color="#ab47bc" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#6a1b9a" stop-opacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path d="M0,25 C5,10 22,2 36,8 C44,12 38,28 24,30 C34,34 38,44 30,48 C22,51 8,42 0,28 Z" fill="url(#violet-grad-r)" />
+          <circle cx="28" cy="16" r="1.8" fill="#ffffff" opacity="0.85" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
 
 <style>
   .butterflies-container {
     position: absolute;
     inset: 0;
-    z-index: 24;
     pointer-events: none;
     overflow: hidden;
+    z-index: 20;
+  }
+
+  /* Butterfly Flight Containers (Composite-only translate3d) */
+  .butterfly-flight {
+    position: absolute;
+    width: 52px;
+    height: 44px;
+    will-change: transform;
+    perspective: 500px;
+  }
+
+  /* Butterfly 3D Assembly */
+  .butterfly {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  }
+
+  .butterfly-rose {
+    transform: scale(0.72) rotate(12deg);
+  }
+
+  .butterfly-gold {
+    transform: scale(0.65) rotate(-15deg);
+  }
+
+  .butterfly-violet {
+    transform: scale(0.55) rotate(8deg);
+  }
+
+  /* Wings with 3D Flapping */
+  .wing {
+    position: absolute;
+    width: 28px;
+    height: 35px;
+    top: 5px;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .wing-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .wing-left {
+    right: 50%;
+    transform-origin: right center;
+    animation: flapLeft 0.16s ease-in-out infinite alternate;
+  }
+
+  .wing-right {
+    left: 50%;
+    transform-origin: left center;
+    animation: flapRight 0.16s ease-in-out infinite alternate;
+  }
+
+  @keyframes flapLeft {
+    0% { transform: rotateY(0deg) translateZ(0); }
+    100% { transform: rotateY(68deg) translateZ(0); }
+  }
+
+  @keyframes flapRight {
+    0% { transform: rotateY(0deg) translateZ(0); }
+    100% { transform: rotateY(-68deg) translateZ(0); }
+  }
+
+  /* Butterfly Body */
+  .body {
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    left: calc(50% - 1.5px);
+    top: 12px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .thorax {
+    width: 3px;
+    height: 16px;
+    background: #3d1a24;
+    border-radius: 3px;
+  }
+
+  .antennae {
+    width: 8px;
+    height: 4px;
+    border-top: 1px solid #3d1a24;
+    border-radius: 50% 50% 0 0;
+    margin-bottom: -1px;
+  }
+
+  /* Flight Path 1: Rose Butterfly (Gentle looping drift around left flower cluster) */
+  .flight-rose {
+    top: 55%;
+    left: 12%;
+    animation: flightPathRose 14s ease-in-out infinite;
+  }
+
+  @keyframes flightPathRose {
+    0% {
+      transform: translate3d(0, 0, 0) rotate(15deg);
+    }
+    25% {
+      transform: translate3d(35px, -32px, 0) rotate(-5deg);
+    }
+    50% {
+      transform: translate3d(70px, -8px, 0) rotate(18deg);
+    }
+    75% {
+      transform: translate3d(25px, 20px, 0) rotate(2deg);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) rotate(15deg);
+    }
+  }
+
+  /* Flight Path 2: Gold Butterfly (Drifting across center & flowers) */
+  .flight-gold {
+    top: 62%;
+    right: 14%;
+    animation: flightPathGold 16s ease-in-out infinite;
+  }
+
+  @keyframes flightPathGold {
+    0% {
+      transform: translate3d(0, 0, 0) rotate(-18deg);
+    }
+    30% {
+      transform: translate3d(-40px, -38px, 0) rotate(8deg);
+    }
+    60% {
+      transform: translate3d(-65px, -12px, 0) rotate(-12deg);
+    }
+    85% {
+      transform: translate3d(-20px, 16px, 0) rotate(-22deg);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) rotate(-18deg);
+    }
+  }
+
+  /* Flight Path 3: Violet Butterfly (Gentle flutter near lower right garden) */
+  .flight-violet {
+    top: 72%;
+    right: 28%;
+    animation: flightPathViolet 12s ease-in-out infinite;
+  }
+
+  @keyframes flightPathViolet {
+    0% {
+      transform: translate3d(0, 0, 0) rotate(5deg);
+    }
+    35% {
+      transform: translate3d(22px, -24px, 0) rotate(20deg);
+    }
+    70% {
+      transform: translate3d(-15px, -15px, 0) rotate(-10deg);
+    }
+    100% {
+      transform: translate3d(0, 0, 0) rotate(5deg);
+    }
   }
 </style>
