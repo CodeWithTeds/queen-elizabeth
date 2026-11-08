@@ -8,6 +8,7 @@
   import TopFlowerGarland from './TopFlowerGarland.svelte';
   import EnvelopeIntro from './EnvelopeIntro.svelte';
   import GrandDukeWelcome from './GrandDukeWelcome.svelte';
+  import RoyalNotFound from './RoyalNotFound.svelte';
   import { preloadHeroSingleFlight } from './singleFlight.js';
   import { resolveGuestFromUrl } from './guestRegistry.js';
 
@@ -227,6 +228,16 @@
 </script>
 
 <main class="app-container" class:intro-active={introStep !== 'home'} class:home-ready={introStep === 'home' && isHomeReady} onpointerdown={handleScreenTap} role="region" aria-label="Elizabeth Birthday App">
+  <!-- Royal 404 Screen for unrecognized route / invitation scrolls -->
+  {#if guestInfo.isNotFound}
+    <RoyalNotFound 
+      invalidSlug={guestInfo.invalidSlug}
+      onContinueAsGuest={() => {
+        guestInfo.isNotFound = false;
+      }}
+    />
+  {/if}
+
   <!-- Intro Sequence (Steps 1 & 2 before Home Screen) -->
   {#if introStep !== 'home'}
     <!-- Step 2: The Grand Duke Welcomes Guests (Directly underneath the envelope) -->

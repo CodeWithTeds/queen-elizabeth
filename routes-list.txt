@@ -1,105 +1,129 @@
 =======================================================
    PRINCESS ELIZABETH • ROYAL INVITATION ROUTES LIST
 =======================================================
+Production Domain: https://queen-elizabeth.vercel.app
 
 --- NINONG (GODFATHERS) ---
 
 1. Andrew Brozo
    Route: /andrew
+   Live Link:  https://queen-elizabeth.vercel.app/andrew
    Local Link: http://localhost:5173/andrew
-   Displays: "Ninong Andrew"
+   Displays:   "Ninong Andrew"
 
 2. Darille Pauitan
    Route: /darille
+   Live Link:  https://queen-elizabeth.vercel.app/darille
    Local Link: http://localhost:5173/darille
-   Displays: "Ninong Darille"
+   Displays:   "Ninong Darille"
 
 3. Luis Tababa
    Route: /luis
+   Live Link:  https://queen-elizabeth.vercel.app/luis
    Local Link: http://localhost:5173/luis
-   Displays: "Ninong Luis"
+   Displays:   "Ninong Luis"
 
 4. Kian Morenencia
    Route: /kian
+   Live Link:  https://queen-elizabeth.vercel.app/kian
    Local Link: http://localhost:5173/kian
-   Displays: "Ninong Kian"
+   Displays:   "Ninong Kian"
 
 5. Zanjoe Manuel
    Route: /zanjoe
+   Live Link:  https://queen-elizabeth.vercel.app/zanjoe
    Local Link: http://localhost:5173/zanjoe
-   Displays: "Ninong Zanjoe"
+   Displays:   "Ninong Zanjoe"
 
 6. Julius Togonon
    Route: /julius
+   Live Link:  https://queen-elizabeth.vercel.app/julius
    Local Link: http://localhost:5173/julius
-   Displays: "Ninong Julius"
+   Displays:   "Ninong Julius"
 
 7. Joeschar Santos
    Route: /joeschar
+   Live Link:  https://queen-elizabeth.vercel.app/joeschar
    Local Link: http://localhost:5173/joeschar
-   Displays: "Ninong Joeschar"
+   Displays:   "Ninong Joeschar"
 
 8. Ibarra Ordinaryo
    Route: /ibarra
+   Live Link:  https://queen-elizabeth.vercel.app/ibarra
    Local Link: http://localhost:5173/ibarra
-   Displays: "Ninong Ibarra"
+   Displays:   "Ninong Ibarra"
 
 9. Johnpaul Cagalitan
    Route: /johnpaul
+   Live Link:  https://queen-elizabeth.vercel.app/johnpaul
    Local Link: http://localhost:5173/johnpaul
-   Displays: "Ninong Johnpaul"
+   Displays:   "Ninong Johnpaul"
 
 10. Shertone
     Route: /shertone
+    Live Link:  https://queen-elizabeth.vercel.app/shertone
     Local Link: http://localhost:5173/shertone
-    Displays: "Ninong Shertone"
+    Displays:   "Ninong Shertone"
 
 11. Tito Ariel
     Route: /tito-ariel  (also works with: /ariel)
+    Live Link:  https://queen-elizabeth.vercel.app/tito-ariel
     Local Link: http://localhost:5173/tito-ariel
-    Displays: "Ninong Tito Ariel"
+    Displays:   "Ninong Tito Ariel"
 
 
 --- NINANG (GODMOTHERS) ---
 
 1. Sitti Alpad
    Route: /sitti
+   Live Link:  https://queen-elizabeth.vercel.app/sitti
    Local Link: http://localhost:5173/sitti
-   Displays: "Ninang Sitti"
+   Displays:   "Ninang Sitti"
 
 2. Alyssa Maranan
    Route: /alyssa
+   Live Link:  https://queen-elizabeth.vercel.app/alyssa
    Local Link: http://localhost:5173/alyssa
-   Displays: "Ninang Alyssa"
+   Displays:   "Ninang Alyssa"
 
 3. Nicole Olimba
    Route: /nicole
+   Live Link:  https://queen-elizabeth.vercel.app/nicole
    Local Link: http://localhost:5173/nicole
-   Displays: "Ninang Nicole"
+   Displays:   "Ninang Nicole"
 
 4. Andjhelyka Nieto
    Route: /andjhelyka
+   Live Link:  https://queen-elizabeth.vercel.app/andjhelyka
    Local Link: http://localhost:5173/andjhelyka
-   Displays: "Ninang Andjhelyka"
+   Displays:   "Ninang Andjhelyka"
 
 5. Analyn
    Route: /analyn
+   Live Link:  https://queen-elizabeth.vercel.app/analyn
    Local Link: http://localhost:5173/analyn
-   Displays: "Ninang Analyn"
+   Displays:   "Ninang Analyn"
 
 6. Marie Charlotte Pangan
    Route: /marie-charlotte  (also works with: /marie or /charlotte)
+   Live Link:  https://queen-elizabeth.vercel.app/marie-charlotte
    Local Link: http://localhost:5173/marie-charlotte
-   Displays: "Ninang Marie Charlotte"
+   Displays:   "Ninang Marie Charlotte"
 
 7. Maria Fe Ferarriz
    Route: /maria-fe  (also works with: /maria or /mariafe)
+   Live Link:  https://queen-elizabeth.vercel.app/maria-fe
    Local Link: http://localhost:5173/maria-fe
-   Displays: "Ninang Maria Fe"
+   Displays:   "Ninang Maria Fe"
 
 
 =======================================================
-Note: Once you deploy to your live domain (e.g., https://elizabeth.com),
-simply replace "http://localhost:5173" with your live domain:
-e.g. https://your-domain.com/andrew
+GENERAL GUEST / HOME INVITATION:
+Live Link:  https://queen-elizabeth.vercel.app/
+Local Link: http://localhost:5173/
+Displays:   Standard Royal Invitation
+
+404 NOT FOUND TEST ROUTE:
+Live Link:  https://queen-elizabeth.vercel.app/404
+Displays:   Royal 404 "Lost in the Kingdom" Message with Grand Duke
 =======================================================

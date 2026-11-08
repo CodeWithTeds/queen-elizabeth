@@ -84,7 +84,7 @@ export const GODPARENTS = [
   },
   {
     slug: 'ariel',
-    aliases: ['ariel', 'tito-ariel', 'titoariel', 'tito-ariel'],
+    aliases: ['ariel', 'tito-ariel', 'titoariel', 'tito_ariel', 'tito'],
     title: 'Ninong',
     firstName: 'Tito Ariel',
     fullName: 'Tito Ariel',
@@ -118,7 +118,7 @@ export const GODPARENTS = [
   },
   {
     slug: 'andjhelyka',
-    aliases: ['andjhelyka', 'andjhelyka-nieto', 'andjhelykanieto', 'nieto'],
+    aliases: ['andjhelyka', 'andjhelyka-nieto', 'andjhelykanieto', 'nieto', 'andjhe', 'anghelyka'],
     title: 'Ninang',
     firstName: 'Andjhelyka',
     fullName: 'Andjhelyka Nieto',
@@ -134,7 +134,7 @@ export const GODPARENTS = [
   },
   {
     slug: 'marie-charlotte',
-    aliases: ['marie-charlotte', 'mariecharlotte', 'marie', 'charlotte', 'marie-charlotte-pangan', 'pangan'],
+    aliases: ['marie-charlotte', 'mariecharlotte', 'marie_charlotte', 'marie', 'charlotte', 'marie-charlotte-pangan', 'mariecharlottepangan', 'pangan'],
     title: 'Ninang',
     firstName: 'Marie Charlotte',
     fullName: 'Marie Charlotte Pangan',
@@ -142,7 +142,7 @@ export const GODPARENTS = [
   },
   {
     slug: 'maria-fe',
-    aliases: ['maria-fe', 'mariafe', 'maria', 'maria-fe-ferarriz', 'ferarriz'],
+    aliases: ['maria-fe', 'mariafe', 'maria_fe', 'maria', 'maria-fe-ferarriz', 'mariafeferarriz', 'ferarriz'],
     title: 'Ninang',
     firstName: 'Maria Fe',
     fullName: 'Maria Fe Ferarriz',
@@ -158,6 +158,7 @@ export function resolveGuestFromUrl() {
       firstName: 'Special Guest',
       displayName: 'Special Guest',
       isGodparent: false,
+      isNotFound: false,
       role: 'Guest'
     };
   }
@@ -165,34 +166,60 @@ export function resolveGuestFromUrl() {
   // 1. Check Pathname (e.g. /andrew, /darille, /sitti)
   let rawSlug = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
 
+  // Strip index.html or empty
+  if (rawSlug === 'index.html' || rawSlug === 'index') {
+    rawSlug = '';
+  }
+
   // 2. Check Hash (e.g. #/andrew or #andrew)
   if (!rawSlug && window.location.hash) {
     rawSlug = window.location.hash.replace(/^[#\/]+|[#\/]+$/g, '').toLowerCase();
+    if (rawSlug === 'index.html' || rawSlug === 'index') {
+      rawSlug = '';
+    }
   }
 
   // 3. Check Query parameter (?name=andrew or ?to=sitti)
-  if (!rawSlug && window.location.search) {
+  let queryName = '';
+  if (window.location.search) {
     try {
       const params = new URLSearchParams(window.location.search);
-      rawSlug = (params.get('to') || params.get('guest') || params.get('name') || '').trim().toLowerCase();
+      queryName = (params.get('to') || params.get('guest') || params.get('name') || '').trim();
     } catch (_) {}
   }
 
-  if (!rawSlug) {
+  const slugToTest = rawSlug || (queryName ? queryName.toLowerCase() : '');
+
+  // Default Home Page (Root /)
+  if (!slugToTest) {
     return {
       title: '',
       firstName: 'Special Guest',
       displayName: 'Special Guest',
       isGodparent: false,
+      isNotFound: false,
+      role: 'Guest'
+    };
+  }
+
+  // Explicit 404 test route
+  if (slugToTest === '404' || slugToTest === 'not-found' || slugToTest === 'notfound') {
+    return {
+      title: '',
+      firstName: 'Special Guest',
+      displayName: 'Special Guest',
+      isGodparent: false,
+      isNotFound: true,
+      invalidSlug: '404',
       role: 'Guest'
     };
   }
 
   // Match against known Ninongs and Ninangs
   const matched = GODPARENTS.find(g => 
-    g.slug === rawSlug || 
-    g.aliases.includes(rawSlug) || 
-    rawSlug.includes(g.slug)
+    g.slug === slugToTest || 
+    g.aliases.includes(slugToTest) || 
+    slugToTest.includes(g.slug)
   );
 
   if (matched) {
@@ -202,21 +229,31 @@ export function resolveGuestFromUrl() {
       displayName: `${matched.title} ${matched.firstName}`,
       fullName: matched.fullName,
       isGodparent: true,
+      isNotFound: false,
       role: matched.role
     };
   }
 
-  // Fallback for custom names in the URL: format slug into readable first name
-  const formattedCustomName = rawSlug
-    .split(/[-_]+/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  // If passed via explicit query param ?to=Grandma, accept as custom guest
+  if (queryName && !rawSlug) {
+    return {
+      title: '',
+      firstName: queryName,
+      displayName: queryName,
+      isGodparent: false,
+      isNotFound: false,
+      role: 'Guest'
+    };
+  }
 
+  // Unrecognized path slug -> Royal 404!
   return {
     title: '',
-    firstName: formattedCustomName,
-    displayName: formattedCustomName,
+    firstName: 'Special Guest',
+    displayName: 'Special Guest',
     isGodparent: false,
+    isNotFound: true,
+    invalidSlug: rawSlug,
     role: 'Guest'
   };
 }
