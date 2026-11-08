@@ -90,6 +90,14 @@ export const GODPARENTS = [
     fullName: 'Tito Ariel',
     role: 'Ninong'
   },
+  {
+    slug: 'ryan',
+    aliases: ['ryan', 'ryan-lacdang', 'ryanlacdang', 'lacdang'],
+    title: 'Ninong',
+    firstName: 'Ryan',
+    fullName: 'Ryan Lacdang',
+    role: 'Ninong'
+  },
   // Celebrity Ninongs
   {
     slug: 'dingdong',

@@ -71,7 +71,13 @@ Production Domain: https://queen-elizabeth.vercel.app
     Local Link: http://localhost:5173/tito-ariel
     Displays:   "Ninong Tito Ariel"
 
-12. Dingdong Dantes
+12. Ryan Lacdang
+    Route: /ryan
+    Live Link:  https://queen-elizabeth.vercel.app/ryan
+    Local Link: http://localhost:5173/ryan
+    Displays:   "Ninong Ryan"
+
+13. Dingdong Dantes
     Route: /dingdong
     Live Link:  https://queen-elizabeth.vercel.app/dingdong
     Local Link: http://localhost:5173/dingdong
