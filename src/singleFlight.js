@@ -25,7 +25,7 @@ export function preloadHeroSingleFlight() {
 
     try {
       const img = new Image();
-      img.src = '/images/main-page.webp';
+      img.src = '/images/welcome.webp';
       if (typeof img.decode === 'function') {
         img.decode().then(finish).catch(finish);
       } else {

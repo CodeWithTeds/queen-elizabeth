@@ -307,15 +307,15 @@
   <section class="page-snap-screen page-1">
     <div class="stage">
       <picture class="stage-picture">
-        <source srcset="/images/main-page.avif" type="image/avif" />
-        <source srcset="/images/main-page.webp" type="image/webp" />
+        <source srcset="/images/welcome.avif" type="image/avif" />
+        <source srcset="/images/welcome.webp" type="image/webp" />
         <img 
-          src="/images/main-page.png" 
+          src="/images/welcome.png" 
           alt="Princess Elizabeth" 
           class="center-image" 
           draggable="false"
-          width="1858"
-          height="2844"
+          width="769"
+          height="756"
           loading="eager"
           fetchpriority="high"
         />
@@ -638,7 +638,7 @@
   }
 
   .app-container.home-ready {
-    background: #fce4ec url('/images/bg.png') center / contain no-repeat fixed;
+    background: #fed7e2;
   }
 
   .home-screen-content {
