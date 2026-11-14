@@ -84,10 +84,18 @@ export const GODPARENTS = [
   },
   {
     slug: 'ariel',
-    aliases: ['ariel', 'tito-ariel', 'titoariel', 'tito_ariel', 'tito'],
+    aliases: ['ariel', 'ariel-oslob', 'arieloslob', 'oslob', 'tito-ariel', 'titoariel', 'tito_ariel', 'tito'],
     title: 'Ninong',
-    firstName: 'Tito Ariel',
-    fullName: 'Tito Ariel',
+    firstName: 'Ariel',
+    fullName: 'Ariel E. Oslob',
+    role: 'Ninong'
+  },
+  {
+    slug: 'jheramie',
+    aliases: ['jheramie', 'jheramie-onia', 'jheramieonia', 'onia'],
+    title: 'Ninong',
+    firstName: 'Jheramie',
+    fullName: 'Jheramie Onia',
     role: 'Ninong'
   },
   {
@@ -175,10 +183,18 @@ export const GODPARENTS = [
   },
   {
     slug: 'analyn',
-    aliases: ['analyn'],
+    aliases: ['analyn', 'analyn-mainit', 'analynmainit', 'mainit'],
     title: 'Ninang',
     firstName: 'Analyn',
-    fullName: 'Analyn',
+    fullName: 'Analyn Mainit',
+    role: 'Ninang'
+  },
+  {
+    slug: 'skylen',
+    aliases: ['skylen', 'sky', 'tita-sky', 'titasky'],
+    title: 'Ninang',
+    firstName: 'Skylen',
+    fullName: 'Skylen',
     role: 'Ninang'
   },
   {
@@ -195,6 +211,22 @@ export const GODPARENTS = [
     title: 'Ninang',
     firstName: 'Maria Fe',
     fullName: 'Maria Fe Ferarriz',
+    role: 'Ninang'
+  },
+  {
+    slug: 'emilyn',
+    aliases: ['emilyn', 'emilyn-bulrton', 'emilynbulrton', 'bulrton', 'emilyn-burton', 'burton'],
+    title: 'Ninang',
+    firstName: 'Emilyn',
+    fullName: 'Emilyn Bulrton',
+    role: 'Ninang'
+  },
+  {
+    slug: 'angela',
+    aliases: ['angela', 'angela-jean', 'angelajean', 'angela-masbate', 'angelamasbate', 'masbate'],
+    title: 'Ninang',
+    firstName: 'Angela',
+    fullName: 'Angela Jean Raya Masbate',
     role: 'Ninang'
   },
   // Celebrity Ninangs

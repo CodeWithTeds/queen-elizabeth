@@ -65,43 +65,49 @@ Production Domain: https://queen-elizabeth.vercel.app
     Local Link: http://localhost:5173/shertone
     Displays:   "Ninong Shertone"
 
-11. Tito Ariel
-    Route: /tito-ariel  (also works with: /ariel)
-    Live Link:  https://queen-elizabeth.vercel.app/tito-ariel
-    Local Link: http://localhost:5173/tito-ariel
-    Displays:   "Ninong Tito Ariel"
+11. Ariel E. Oslob
+    Route: /ariel  (also works with: /tito-ariel, /ariel-oslob)
+    Live Link:  https://queen-elizabeth.vercel.app/ariel
+    Local Link: http://localhost:5173/ariel
+    Displays:   "Ninong Ariel" (Full: "Ariel E. Oslob")
 
-12. Ryan Lacdang
+12. Jheramie Onia
+    Route: /jheramie  (also works with: /jheramie-onia)
+    Live Link:  https://queen-elizabeth.vercel.app/jheramie
+    Local Link: http://localhost:5173/jheramie
+    Displays:   "Ninong Jheramie"
+
+13. Ryan Lacdang
     Route: /ryan
     Live Link:  https://queen-elizabeth.vercel.app/ryan
     Local Link: http://localhost:5173/ryan
     Displays:   "Ninong Ryan"
 
-13. Dingdong Dantes
+14. Dingdong Dantes
     Route: /dingdong
     Live Link:  https://queen-elizabeth.vercel.app/dingdong
     Local Link: http://localhost:5173/dingdong
     Displays:   "Ninong Dingdong"
 
-13. Piolo Pascual
+15. Piolo Pascual
     Route: /piolo
     Live Link:  https://queen-elizabeth.vercel.app/piolo
     Local Link: http://localhost:5173/piolo
     Displays:   "Ninong Piolo"
 
-14. Alden Richards
+16. Alden Richards
     Route: /alden
     Live Link:  https://queen-elizabeth.vercel.app/alden
     Local Link: http://localhost:5173/alden
     Displays:   "Ninong Alden"
 
-15. Coco Martin
+17. Coco Martin
     Route: /coco
     Live Link:  https://queen-elizabeth.vercel.app/coco
     Local Link: http://localhost:5173/coco
     Displays:   "Ninong Coco"
 
-16. Jericho Rosales
+18. Jericho Rosales
     Route: /jericho
     Live Link:  https://queen-elizabeth.vercel.app/jericho
     Local Link: http://localhost:5173/jericho
@@ -134,49 +140,67 @@ Production Domain: https://queen-elizabeth.vercel.app
    Local Link: http://localhost:5173/andjhelyka
    Displays:   "Ninang Andjhelyka"
 
-5. Analyn
-   Route: /analyn
+5. Analyn Mainit
+   Route: /analyn  (also works with: /analyn-mainit)
    Live Link:  https://queen-elizabeth.vercel.app/analyn
    Local Link: http://localhost:5173/analyn
-   Displays:   "Ninang Analyn"
+   Displays:   "Ninang Analyn" (Full: "Analyn Mainit")
 
-6. Marie Charlotte Pangan
+6. Skylen (Tita Sky)
+   Route: /skylen  (also works with: /sky, /tita-sky)
+   Live Link:  https://queen-elizabeth.vercel.app/skylen
+   Local Link: http://localhost:5173/skylen
+   Displays:   "Ninang Skylen"
+
+7. Marie Charlotte Pangan
    Route: /marie-charlotte  (also works with: /marie or /charlotte)
    Live Link:  https://queen-elizabeth.vercel.app/marie-charlotte
    Local Link: http://localhost:5173/marie-charlotte
    Displays:   "Ninang Marie Charlotte"
 
-7. Maria Fe Ferarriz
+8. Maria Fe Ferarriz
    Route: /maria-fe  (also works with: /maria or /mariafe)
    Live Link:  https://queen-elizabeth.vercel.app/maria-fe
    Local Link: http://localhost:5173/maria-fe
    Displays:   "Ninang Maria Fe"
 
-8. Marian Rivera
-   Route: /marian
-   Live Link:  https://queen-elizabeth.vercel.app/marian
-   Local Link: http://localhost:5173/marian
-   Displays:   "Ninang Marian"
+9. Emilyn Bulrton
+   Route: /emilyn  (also works with: /emilyn-bulrton, /bulrton)
+   Live Link:  https://queen-elizabeth.vercel.app/emilyn
+   Local Link: http://localhost:5173/emilyn
+   Displays:   "Ninang Emilyn"
 
-9. Kathryn Bernardo
-   Route: /kathryn
-   Live Link:  https://queen-elizabeth.vercel.app/kathryn
-   Local Link: http://localhost:5173/kathryn
-   Displays:   "Ninang Kathryn"
+10. Angela Jean Raya Masbate
+    Route: /angela  (also works with: /angela-jean, /masbate)
+    Live Link:  https://queen-elizabeth.vercel.app/angela
+    Local Link: http://localhost:5173/angela
+    Displays:   "Ninang Angela"
 
-10. Anne Curtis
+11. Marian Rivera
+    Route: /marian
+    Live Link:  https://queen-elizabeth.vercel.app/marian
+    Local Link: http://localhost:5173/marian
+    Displays:   "Ninang Marian"
+
+12. Kathryn Bernardo
+    Route: /kathryn
+    Live Link:  https://queen-elizabeth.vercel.app/kathryn
+    Local Link: http://localhost:5173/kathryn
+    Displays:   "Ninang Kathryn"
+
+13. Anne Curtis
     Route: /anne
     Live Link:  https://queen-elizabeth.vercel.app/anne
     Local Link: http://localhost:5173/anne
     Displays:   "Ninang Anne"
 
-11. Bea Alonzo
+14. Bea Alonzo
     Route: /bea
     Live Link:  https://queen-elizabeth.vercel.app/bea
     Local Link: http://localhost:5173/bea
     Displays:   "Ninang Bea"
 
-12. Heart Evangelista
+15. Heart Evangelista
     Route: /heart
     Live Link:  https://queen-elizabeth.vercel.app/heart
     Local Link: http://localhost:5173/heart
