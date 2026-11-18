@@ -324,6 +324,23 @@
 
     <!-- Ultra-lightweight Butterflies Fluttering Around Flowers & Elizabeth -->
     <Butterflies3D />
+
+    <!-- Interactive Scroll Down Hint on Homescreen -->
+    <div 
+      class="scroll-down-prompt"
+      onclick={() => {
+        document.querySelector('.page-church')?.scrollIntoView({ behavior: 'smooth' });
+      }}
+      role="button"
+      tabindex="0"
+      onkeydown={(e) => e.key === 'Enter' && document.querySelector('.page-church')?.scrollIntoView({ behavior: 'smooth' })}
+      aria-label="Scroll down"
+    >
+      <span class="scroll-down-text">scroll down!</span>
+      <svg class="scroll-down-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5v14M19 12l-7 7-7-7"/>
+      </svg>
+    </div>
   </section>
 
   <!-- PAGE 2: Modern Church Showcase -->
@@ -715,6 +732,68 @@
     -webkit-user-drag: none;
     pointer-events: auto;
     filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
+  }
+
+  /* Homescreen Scroll Down Prompt */
+  .scroll-down-prompt {
+    position: absolute;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 35;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(255, 213, 79, 0.95);
+    border-radius: 999px;
+    box-shadow: 
+      0 6px 20px rgba(225, 29, 72, 0.22),
+      0 2px 6px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    animation: scrollPromptBounce 2s infinite ease-in-out;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .scroll-down-prompt:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  .scroll-down-text {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    color: #e11d48;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+
+  .scroll-down-arrow {
+    color: #e11d48;
+    animation: arrowNudge 1.5s infinite ease-in-out;
+  }
+
+  @keyframes scrollPromptBounce {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(6px);
+    }
+  }
+
+  @keyframes arrowNudge {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(3px);
+    }
   }
 
   /* PAGE 2, PAGE 3, PAGE 4 & PAGE 5: Modern Church, Venue, Memories & Location Showcases */

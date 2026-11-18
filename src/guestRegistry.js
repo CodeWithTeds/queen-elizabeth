@@ -106,6 +106,14 @@ export const GODPARENTS = [
     fullName: 'Ryan Lacdang',
     role: 'Ninong'
   },
+  {
+    slug: 'nico',
+    aliases: ['nico', 'ninong-nico', 'ninongnico'],
+    title: 'Ninong',
+    firstName: 'Nico',
+    fullName: 'Nico',
+    role: 'Ninong'
+  },
   // Celebrity Ninongs
   {
     slug: 'dingdong',
@@ -227,6 +235,14 @@ export const GODPARENTS = [
     title: 'Ninang',
     firstName: 'Angela',
     fullName: 'Angela Jean Raya Masbate',
+    role: 'Ninang'
+  },
+  {
+    slug: 'vhanessa',
+    aliases: ['vhanessa', 'vanessa', 'ninang-vhanessa', 'ninangvhanessa'],
+    title: 'Ninang',
+    firstName: 'Vhanessa',
+    fullName: 'Vhanessa',
     role: 'Ninang'
   },
   // Celebrity Ninangs
