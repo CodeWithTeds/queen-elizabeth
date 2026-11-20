@@ -117,6 +117,45 @@
   let introStep = $state('envelope'); // 'envelope' | 'grand-duke' | 'home'
   let isHomeReady = $state(false);
 
+  /* Royal Countdown to December 4 */
+  const CELEBRATION_MONTH = 11; // December (0-indexed)
+  const CELEBRATION_DAY = 4;
+  const CELEBRATION_HOUR = 10; // 10:00 AM ceremony
+
+  function getCelebrationTarget(now) {
+    let target = new Date(now.getFullYear(), CELEBRATION_MONTH, CELEBRATION_DAY, CELEBRATION_HOUR, 0, 0, 0);
+    if (now.getTime() >= target.getTime()) {
+      const dayEnd = new Date(now.getFullYear(), CELEBRATION_MONTH, CELEBRATION_DAY + 1, 0, 0, 0, 0);
+      if (now.getTime() >= dayEnd.getTime()) {
+        target = new Date(now.getFullYear() + 1, CELEBRATION_MONTH, CELEBRATION_DAY, CELEBRATION_HOUR, 0, 0, 0);
+      }
+    }
+    return target;
+  }
+
+  function getCountdownState() {
+    const now = new Date();
+    const target = getCelebrationTarget(now);
+    const totalSeconds = Math.max(0, Math.floor((target.getTime() - now.getTime()) / 1000));
+    const pad = (value) => String(value).padStart(2, '0');
+    return {
+      days: pad(Math.floor(totalSeconds / 86400)),
+      hours: pad(Math.floor((totalSeconds % 86400) / 3600)),
+      minutes: pad(Math.floor((totalSeconds % 3600) / 60)),
+      seconds: pad(totalSeconds % 60),
+      isCelebrationDay: totalSeconds === 0
+    };
+  }
+
+  let countdown = $state(getCountdownState());
+
+  onMount(() => {
+    const countdownTimer = setInterval(() => {
+      countdown = getCountdownState();
+    }, 1000);
+    return () => clearInterval(countdownTimer);
+  });
+
   function handleOpenEnvelope() {
     introStep = 'grand-duke';
   }
@@ -305,6 +344,34 @@
 
   <!-- PAGE 1: Main Screen with Elizabeth, Floating Butterflies, and Blooming Garden -->
   <section class="page-snap-screen page-1">
+    <!-- Royal Countdown to December 4 -->
+    <div class="countdown-card" aria-label="Countdown to December 4">
+      <span class="countdown-eyebrow">
+        {countdown.isCelebrationDay ? 'Today is the day!' : 'The royal celebration begins in'}
+      </span>
+      <div class="countdown-units" role="timer" aria-live="off">
+        <div class="countdown-unit">
+          <span class="countdown-value">{countdown.days}</span>
+          <span class="countdown-label">days</span>
+        </div>
+        <span class="countdown-colon" aria-hidden="true">:</span>
+        <div class="countdown-unit">
+          <span class="countdown-value">{countdown.hours}</span>
+          <span class="countdown-label">hrs</span>
+        </div>
+        <span class="countdown-colon" aria-hidden="true">:</span>
+        <div class="countdown-unit">
+          <span class="countdown-value">{countdown.minutes}</span>
+          <span class="countdown-label">min</span>
+        </div>
+        <span class="countdown-colon" aria-hidden="true">:</span>
+        <div class="countdown-unit">
+          <span class="countdown-value">{countdown.seconds}</span>
+          <span class="countdown-label">sec</span>
+        </div>
+      </div>
+    </div>
+
     <div class="stage">
       <picture class="stage-picture">
         <source srcset="/images/welcome.avif" type="image/avif" />
@@ -732,6 +799,102 @@
     -webkit-user-drag: none;
     pointer-events: auto;
     filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
+  }
+
+  /* Homescreen layout: make room for the royal countdown below the flower canopy */
+  .page-1 {
+    padding: calc(clamp(92px, 15vh, 134px) + env(safe-area-inset-top, 0px)) 12px calc(64px + env(safe-area-inset-bottom, 0px));
+    gap: clamp(6px, 1.5vh, 14px);
+  }
+
+  /* Royal Countdown to December 4 */
+  .countdown-card {
+    position: relative;
+    z-index: 36;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px clamp(14px, 5vw, 22px) 9px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255, 213, 79, 0.95);
+    border-radius: 22px;
+    box-shadow:
+      0 10px 30px rgba(225, 29, 72, 0.18),
+      0 2px 8px rgba(0, 0, 0, 0.06);
+    pointer-events: none;
+    animation: countdownFloatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .countdown-eyebrow {
+    font-family: 'Waltograph', cursive, -apple-system, sans-serif;
+    font-size: clamp(1rem, 3.6vw, 1.35rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: 0.5px;
+    color: #be123c;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .countdown-units {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(2px, 1vw, 6px);
+  }
+
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: clamp(42px, 12vw, 58px);
+  }
+
+  .countdown-value {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(1.35rem, 5.4vw, 1.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: #e11d48;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+
+  .countdown-label {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: clamp(0.55rem, 1.9vw, 0.65rem);
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #9f1239;
+    opacity: 0.8;
+  }
+
+  .countdown-colon {
+    align-self: flex-start;
+    margin-top: clamp(2px, 0.6vw, 4px);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: clamp(1.15rem, 4.6vw, 1.55rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: #ffd54f;
+    text-shadow: 0 1px 1px rgba(190, 18, 60, 0.25);
+  }
+
+  @keyframes countdownFloatIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.96);
+      filter: blur(3px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
   }
 
   /* Homescreen Scroll Down Prompt */
